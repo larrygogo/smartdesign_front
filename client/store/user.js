@@ -1,27 +1,33 @@
 export const state = () => ({
-  count: 0,
-  pageSize: 10,
-  userList: []
+  token: null,
+  email: "",
+  userId: "",
 })
 
 export const mutations = {
-  SET_PAGE: (state, page) => {
-    state.page = page
+  SET_TOKEN: (state, token) => {
+    state.token = token
   },
-  SET_COUNT: (state, count) => {
-    state.count = count
-  },
-  SET_USER_LIST: (state, userList) => {
-    state.userList = userList
+  SET_USERINFO: (state, userInfo) => {
+    state.userId = userInfo.userId
+    state.email = userInfo.email
   }
 }
 
 export const actions = {
-  async getUserList({ state, commit }, { page }) {
-    const res = await this.$axios.get(`/user/list?page=${page}&pageSize=${state.pageSize}`)
+  async login({ commit }, params) {
+    const res = await this.$axios.post("/user/token", params)
       .then(res => res.data)
-    commit("SET_USER_LIST", res.data.rows)
-    commit("SET_COUNT", res.data.count)
-    return res.data.rows
-  }
+    commit("SET_TOKEN", res.data.token)
+    this.$cookies.set("token", res.data.token, {
+      path: "/",
+      maxAge: 2 * 60 * 60
+    })
+    return res
+  },
+  async getUserInfo({ commit }) {
+    const res = await this.$axios.get("/user/info").then(res => res.data)
+    commit("SET_USERINFO", res.data)
+    return res
+  },
 }

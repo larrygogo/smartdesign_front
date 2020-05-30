@@ -7,14 +7,15 @@ module.exports = {
     meta: [
       { lang: "zh-cn" },
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" }, { hid: "description", name: "description", content: "Meta description" }]
+      { name: "viewport", content: "width=device-width, initial-scale=1" }, { hid: "description", name: "description", content: "Meta description" }],
+    link: [{ href: "https://fonts.googleapis.com/css2?family=Open+Sans&display=swap", ref: "stylesheet" }]
   },
   // global css
   css: [],
   dev: process.env.NODE_ENV !== "production",
   server: {
     host: "127.0.0.1",
-    port: "3001",
+    port: "3301",
     timing: {
       total: true
     }
@@ -26,6 +27,7 @@ module.exports = {
   ],
   plugins: [
     "~/plugins/axios",
+    "~/plugins/event",
     { src: "@/plugins/charts", ssr: false },
     "~/plugins/element-ui"
   ],

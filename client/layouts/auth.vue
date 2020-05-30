@@ -5,44 +5,20 @@
         to="/"
         class="logo">
         <img
-          src="~assets/images/logo.png"
+          src="~assets/images/ls.png"
           alt=""
           srcset="">
-        <span>Manage System</span>
+        <span>图必</span>
+        <span>ToolBee</span>
       </n-link>
-      <ul class="nav">
-        <n-link to="/">
-          首页
+      <ul class="user">
+        <n-link to="/login">
+          登录
         </n-link>
-        <n-link to="/goods">
-          活动管理
-        </n-link>
-        <n-link to="/order">
-          订单管理
-        </n-link>
-        <n-link to="/user">
-          用户管理
-        </n-link>
-        <n-link to="/setting">
-          设置
+        <n-link to="/register">
+          注册
         </n-link>
       </ul>
-      <div class="user">
-        <el-dropdown
-          trigger="click"
-          @command="userAction">
-          <span class="el-dropdown-link">
-            <i class="el-icon-user" />
-            {{ nickname || "个人中心" }}
-            <i class="el-icon-arrow-down el-icon--right" />
-          </span>
-          <el-dropdown-menu
-            slot="dropdown">
-            <el-dropdown-item
-              command="layout">退出</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
     </header>
     <nuxt class="pc-body" />
   </div>
@@ -55,7 +31,6 @@ export default {
     nickname: state => state.manager.nickname
   }),
   created() {
-    this.$store.dispatch("manager/getUserInfo")
   },
   methods: {
     userAction(command) {
@@ -105,6 +80,7 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+  @import url('https://fonts.googleapis.com/css2?family=Sigmar+One&display=swap');
   .pc-page {
     min-width: 1100px;
   }
@@ -116,18 +92,17 @@ export default {
     height: 60px;
     width: 100%;
     padding: 0 40px;
-    background-color: #fff;
-    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.1);
     z-index: 20;
 
     .logo {
-      float: left;
+      font-family: 'Sigmar One', sans-serif;
       font-size: 20px;
       font-weight: bold;
       line-height: 60px;
-      color: #333;
+      color: rgb(99, 99, 99);
       overflow: auto;
       letter-spacing: 2px;
+      overflow: auto;
 
       img {
         float: left;
@@ -135,28 +110,29 @@ export default {
         height: 30px;
         width: 30px;
       }
+
+      span {
+        float: left;
+      }
     }
 
-    .nav {
-      float: left;
+    .user {
+      float: right;
       line-height: 60px;
       margin-left: 40px;
+
       a {
         color: #333;
+        transition: all .2s;
 
         &:not(:last-of-type) {
           margin-right: 20px;
         }
       }
       a:hover {
-        color: #0062ff;
+        color: #000;
+        font-weight: bold;
       }
-    }
-
-    .user {
-      float: right;
-      height: 60px;
-      box-sizing: border-box;
 
       /deep/ .el-dropdown{
         height: 20px;

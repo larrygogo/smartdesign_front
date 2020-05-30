@@ -2,19 +2,20 @@
   <div class="page">
     <div class="login-container">
       <h1 class="title">
-        Manage System
+        欢迎访问
       </h1>
       <p class="desc">
-        请输入您的账号
+        勤劳的小蜜蜂
       </p>
       <el-form
         ref="login"
         class="login-form">
         <el-form-item prop="userId">
           <el-input
-            v-model="form.account"
+            v-model="form.email"
             class="input-box"
-            placeholder="请输入用户名" />
+            name="username"
+            placeholder="请输入邮箱" />
         </el-form-item>
         <el-form-item prop="password">
           <el-input
@@ -32,22 +33,24 @@
         </el-form-item>
       </el-form>
     </div>
+    <footer>ToolBee.cn ® 2020</footer>
   </div>
 </template>
 
 <script>
 export default {
+  layout: "auth",
   data() {
     return {
       form: {
-        account: "",
+        email: "",
         password: ""
       }
     }
   },
   methods: {
     async login() {
-      this.$store.dispatch("manager/login", this.form).then(() => {
+      this.$store.dispatch("user/login", this.form).then(() => {
         this.$router.push("/")
       })
     }
@@ -58,24 +61,28 @@ export default {
 <style lang="scss" scoped>
 .page {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100vw;
   height: 100vh;
   min-width: 1024px;
   padding: 0 20px;
   box-sizing: border-box;
-  background-color: #f0f2f5;
-  background-image: url(~assets/images/homebg.png);
-  background-size: 100% 100%;
-  // background-repeat: no-repeat;
+  background-color: #d3dae0;
+  background-image: url(~assets/images/homebg.svg);
+  background-size: auto 100%;
+  background-position: top center;
+  background-repeat: no-repeat;
 
   .login-container {
     box-sizing: border-box;
     width: 720px;
     padding: 50px 40px;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: #fefefe;
     box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.1);
+
     border-radius: 20px;
     background-image:  url(~assets/images/logo1.png);
     background-size: 300px 300px;
@@ -92,7 +99,6 @@ export default {
       font-size: 20px;
       margin: 0 0 10px 0;
       font-weight: 600;
-      // color: rgb(50, 41, 101);
       color: #333;
     }
 
@@ -120,7 +126,7 @@ export default {
           }
 
           &:focus {
-            border: 1px solid #0062ff;
+            border: 2px solid #7d7d7d;
             background-color: #f0f2f5;
           }
 
@@ -132,18 +138,25 @@ export default {
       }
 
       .login-btn {
+        width: 100%;
         border-radius: 8px;
         color: #fff;
         font-size: 14px;
         height: 38px;
         float: right;
-        background-color: #0062ff;
+        
 
         span {
           padding-left: 5px;
         }
       }
     }
+  }
+
+  footer {
+    position: fixed;
+    bottom: 20px;
+    color: #636363;
   }
 }
 </style>
