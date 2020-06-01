@@ -1,5 +1,5 @@
 <template>
-  <div class="text-tool" v-if="currentIndex !== -1 && layers[currentIndex].type === 'image'">
+  <div class="text-tool" v-if="layers[currentIndex] && layers[currentIndex].type === 'image'">
     <el-form>
       <el-form-item label="翻转">
         <el-button
@@ -19,7 +19,7 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <el-popconfirm title="这是一段内容确定删除吗？" @onConfirm="deleteLayer">
+        <el-popconfirm title="确定删除这个图层吗？" @onConfirm="deleteLayer">
           <el-button class="input" type="danger" slot="reference">删除图层</el-button>
         </el-popconfirm>
       </el-form-item>

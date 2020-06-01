@@ -50,22 +50,27 @@ export default {
     textLayer,
     imageLayer
   },
-  computed: mapState({
-    width: state => state.editor.width,
-    height: state => state.editor.height,
-    background: state => state.editor.background,
-    layers: state => state.editor.layers,
-    scale: state => state.editor.templateScale
-  }),
+  computed: {
+    ...mapState({
+      width: state => state.editor.width,
+      height: state => state.editor.height,
+      background: state => state.editor.background,
+      layers: state => state.editor.layers,
+      scale: state => state.editor.templateScale
+    })
+  },
   methods: {
     changeTemplate(attr, value) {
       this.template[attr] = value;
     },
     moveLayer(top, left, index) {
-      this.$store.commit("editor/moveLayer", top, left, index)
+      this.$store.commit("editor/moveLayer", top, left, index);
     },
     seleteTemplate() {
-        this.$store.commit("editor/setTemplate", { attr: "currentIndex", value: -1})
+      this.$store.commit("editor/setTemplate", {
+        attr: "currentIndex",
+        value: -1
+      });
     }
   }
 };

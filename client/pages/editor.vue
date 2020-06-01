@@ -1,7 +1,8 @@
 <template>
   <div class="editor" @click.self="initTool">
-    <slider />
     <template-editor />
+    <layers-tool />
+    <slider />
     <scale-tool />
     <template-tool />
     <text-tool />
@@ -16,6 +17,7 @@ import ScaleTool from "../components/editor/tools/scale-tool";
 import TextTool from "../components/editor/tools/text-tool";
 import ImageTool from "../components/editor/tools/image-tool";
 import TemplateTool from "../components/editor/tools/template-tool";
+import layersTool from "../components/editor/tools/layers-tool";
 export default {
   head: {
     title: "编辑器"
@@ -26,6 +28,7 @@ export default {
     ScaleTool,
     TextTool,
     ImageTool,
+    layersTool,
     TemplateEditor,
     TemplateTool
   },

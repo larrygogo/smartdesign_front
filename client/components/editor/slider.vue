@@ -8,14 +8,37 @@
         <i class="iconfont icon-image"></i>
       </li>
     </ul>
+    <ul class="slider-nav">
+      <li :class="{clicked: !layersTool}" title="图层" @click="layersTool = !layersTool">
+        <i class="iconfont icon-layers"></i>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
+  computed: {
+    ...mapState({
+      count: state => state.editor.count
+    }),
+    layersTool: {
+      get() {
+        return this.$store.state.editor.tools.layers
+      },
+      set(value) {
+        this.$store.commit("editor/setTemplate", {
+          attr: "layersTool",
+          value
+        })
+      }
+    }
+  },
   methods: {
     addTextLayer() {
       this.$store.commit("editor/addLayer", {
+        name: "文本" + this.count,
         type: "text",
         value: "默认文本",
         style: {
@@ -35,6 +58,7 @@ export default {
     },
     addImageLayer() {
       this.$store.commit("editor/addLayer", {
+        name: "图像" + this.count,
         type: "image",
         image: "/images/ls.png",
         style: {
@@ -61,10 +85,17 @@ export default {
   height: calc(100% - 60px);
   background-color: #fff;
   width: 80px;
+  padding: 20px 0 0;
+  border-right: 1px solid #f1f3f7;
+  z-index: 3000;
 
   .slider-nav {
     list-style: none;
-    padding: 40px 0 0;
+    padding: 20px 0;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px dashed #f1f3f7;
+    }
 
     li {
       text-align: center;
@@ -81,7 +112,24 @@ export default {
         font-size: 30px;
         color: #636363;
       }
+
+      &.clicked {
+        .iconfont {
+          color: #f8cc0b;
+        }
+      }
     }
+  }
+}
+
+/deep/ {
+  .layer-tool {
+    outline: none;
+    position: absolute;
+    left: 80px;
+    top: 60px;
+    height: calc(100% - 60px);
+    box-shadow: none;
   }
 }
 </style>

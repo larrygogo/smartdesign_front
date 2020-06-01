@@ -26,6 +26,7 @@ module.exports = {
     "cookie-universal-nuxt"
   ],
   plugins: [
+    "~/plugins/awe-dnd",
     "~/plugins/axios",
     "~/plugins/event",
     { src: "@/plugins/charts", ssr: false },
