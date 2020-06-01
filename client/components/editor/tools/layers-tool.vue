@@ -128,7 +128,7 @@ export default {
 .layers-tool {
   position: absolute;
   background-color: #fff;
-  left: 80px;
+  left: -300px;
   top: 60px;
   width: 300px;
   height: calc(100% - 60px);
@@ -137,7 +137,7 @@ export default {
   transition: all 0.5s ease-in-out;
 
   &.out {
-    left: -300px;
+    left: 80px;
   }
 
   .title {

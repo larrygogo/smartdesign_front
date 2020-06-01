@@ -9,7 +9,7 @@
       </li>
     </ul>
     <ul class="slider-nav">
-      <li :class="{clicked: !layersTool}" title="图层" @click="layersTool = !layersTool">
+      <li :class="{clicked: layersTool}" title="图层" @click="layersTool = !layersTool">
         <i class="iconfont icon-layers"></i>
       </li>
     </ul>
@@ -87,7 +87,6 @@ export default {
   width: 80px;
   padding: 20px 0 0;
   border-right: 1px solid #f1f3f7;
-  z-index: 3000;
 
   .slider-nav {
     list-style: none;
