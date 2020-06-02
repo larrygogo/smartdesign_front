@@ -150,7 +150,9 @@ export default {
   }
 
   .layer-list {
-    padding-top: 70px;
+    margin-top: 70px;
+    height: calc(100% - 70px);
+    overflow: scroll;
 
     .layer-item {
       position: relative;

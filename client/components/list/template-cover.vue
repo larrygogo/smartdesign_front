@@ -1,6 +1,6 @@
 <template>
-  <div class="template-item" shadow="hover">
-    <img class="template-cover" :src="cover" alt />
+  <div class="template-item">
+    <img class="template-cover" :src="cover" @click="toEditor(id)"/>
     <div class="template-info">
       <p class="name">{{ name }}</p>
       <el-dropdown class="more" trigger="click">
@@ -19,8 +19,14 @@
 <script>
 export default {
     props: {
+        id: String,
         name: String,
         cover: String
+    },
+    methods: {
+      toEditor(id) {
+        this.$router.push("/editor?id=" + id)
+      }
     }
 };
 </script>
@@ -29,11 +35,14 @@ export default {
 .template-item {
   border-radius: 20px;
   margin-bottom: 20px;
+  
 
   .template-cover {
     width: 100%;
     border-radius: 5px;
+    cursor: pointer !important;
   }
+
   .template-info {
     display: flex;
     justify-content: space-between;
@@ -41,9 +50,9 @@ export default {
     padding: 0 5px;
 
     .name {
-      font-size: 18px;
+      font-size: 14px;
       line-height: 30px;
-      color: #333;
+      color: #636363;
     }
 
     .more {

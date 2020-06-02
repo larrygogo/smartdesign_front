@@ -24,6 +24,18 @@ export const mutations = {
             layers: false
         }
     },
+    loadTemplate: (state, template) => {
+        state.count = 1
+        state.width = template.width
+        state.height = template.height
+        state.background = "#ffffff"
+        state.currentIndex = -1
+        state.templateScale = 100
+        state.layers = template.layers
+        state.tools = {
+            layers: false
+        }
+    },
     changeLayer: (state, {
         index,
         attr,
@@ -83,5 +95,13 @@ export const mutations = {
 }
 
 export const actions = {
-
+    async getTemplate({commit}, id) {
+        const res = await this.$axios.get("/template/info?id=" + id)
+            .then(res => res.data)
+        if(res.code === "0") {
+            commit("loadTemplate", res.data)
+        } else {
+            commit("initTemplate")
+        }
+    }
 }

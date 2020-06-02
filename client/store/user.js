@@ -2,6 +2,7 @@ export const state = () => ({
   token: null,
   email: "",
   userId: "",
+  isAdmin: false
 })
 
 export const mutations = {
@@ -11,6 +12,7 @@ export const mutations = {
   SET_USERINFO: (state, userInfo) => {
     state.userId = userInfo.userId
     state.email = userInfo.email
+    state.isAdmin = userInfo.admin || false
   }
 }
 

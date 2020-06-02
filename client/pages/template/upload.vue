@@ -7,10 +7,10 @@
         icon="el-icon-arrow-left"
         type="info"
         plain
-        @click="$router.push('/template')">
+        @click="$router.push('/')">
         返回
       </el-button>
-      <span class="title">模板管理</span>
+      <span class="title">新建模板</span>
     </div>
     <section class="upload-row">
       <el-row gutter="20">
@@ -41,7 +41,8 @@
               <el-upload
                 ref="upload"
                 class="upload-action"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :action="host + '/template/upload'"
+                :headers="{Authorization}"
                 :multiple="false"
                 :limit="1"
                 :on-remove="handleRemove"
@@ -76,11 +77,16 @@
 </template>
 
 <script>
+import env from "../../../env"
+import {mapState} from 'vuex'
 export default {
-  // middleware: "auth",
-  // layout: "auth",
+  middleware: "auth",
+  computed: mapState({
+    Authorization: state => ('Bearer ' + state.user.token)
+  }),
   data() {
     return {
+      host: env[process.env.NODE_ENV].ENV_API,
       fileList: [],
       form: {
         name: ""
@@ -112,14 +118,13 @@ export default {
     .title {
       font-size: 18px;
       vertical-align: middle;
-      font-weight: bold;
     }
   }
 
   .upload-row {
 
     .upload-form-card {
-      border-radius: 20px;
+      border-radius: 10px;
       min-height: calc(100vh - 7.5rem - 52px);
     }
   }
@@ -127,7 +132,7 @@ export default {
   .template-view {
     padding: 40px 20px;
     background-color: #DCDFE6;
-    border-radius: 20px;
+    border-radius: 10px;
     min-height: calc(100vh - 7.5rem - 52px);
 
     .view-box {

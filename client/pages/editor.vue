@@ -38,7 +38,11 @@ export default {
     };
   },
   mounted() {
+      const { id } = this.$route.query
       this.$store.commit("editor/initTemplate")
+      if(id) {
+        this.$store.dispatch("editor/getTemplate", id)
+      }
   },
   methods: {
     zoom(scale) {

@@ -62,9 +62,9 @@
     </div>
     <div
       class="image-area"
-      :style="{opacity: opacity, transform: `scaleX(${scaleX}) scaleY(${scaleY})`}"
+      :style="{opacity: opacity, transform: `matrix(${transform.xx}, ${transform.xy}, ${transform.yx}, ${transform.yy}, ${transform.tx},  ${transform.ty})`}"
     >
-      <img :src="image" alt srcset />
+      <img :src="image" />
     </div>
   </div>
 </template>
@@ -121,16 +121,17 @@ export default {
         return 1;
       }
     },
-    scaleX: {
-      type: Number,
+    transform: {
+      type: Object,
       default: () => {
-        return -1;
-      }
-    },
-    scaleY: {
-      type: Number,
-      default: () => {
-        return -1;
+        return {
+          xx: 1,
+          xy: 0,
+          yx: 0,
+          yy: 1,
+          tx: 0,
+          ty: 1
+        };
       }
     }
   },
@@ -157,6 +158,7 @@ export default {
       this.$store.commit("editor/editLayer", this.index);
     },
     zoom(mode) {
+      const scale = this.width / this.height
       document.onmousemove = e => {
         let maxMove = Math.max(Math.abs(e.movementX), Math.abs(e.movementY));
         const type =
@@ -185,41 +187,41 @@ export default {
           if (type === "tl") {
             width += (maxMove / this.scale) * 100;
             left -= (maxMove / this.scale) * 100;
-            height += (maxMove / this.scale) * 100;
-            top -= (maxMove / this.scale) * 100;
+            height += (maxMove / scale / this.scale) * 100;
+            top -= (maxMove / scale / this.scale) * 100;
           } else if (type === "br" && width > 5 && height > 5) {
             width += (-maxMove / this.scale) * 100;
             left -= (-maxMove / this.scale) * 100;
-            height += (-maxMove / this.scale) * 100;
-            top -= (-maxMove / this.scale) * 100;
+            height += (-maxMove / scale / this.scale) * 100;
+            top -= (-maxMove / scale / this.scale) * 100;
           }
         } else if (mode === "tr") {
           if (type === "tr") {
             width += (maxMove / this.scale) * 100;
-            height += (maxMove / this.scale) * 100;
-            top -= (maxMove / this.scale) * 100;
+            height += (maxMove / scale / this.scale) * 100;
+            top -= (maxMove / scale / this.scale) * 100;
           } else if (type === "bl" && width > 5 && height > 5) {
             width += (-maxMove / this.scale) * 100;
-            height += (-maxMove / this.scale) * 100;
-            top -= (-maxMove / this.scale) * 100;
+            height += (-maxMove / scale / this.scale) * 100;
+            top -= (-maxMove / scale / this.scale) * 100;
           }
         } else if (mode === "bl") {
           if (type === "bl") {
             width += (maxMove / this.scale) * 100;
             left -= (maxMove / this.scale) * 100;
-            height += (maxMove / this.scale) * 100;
+            height += (maxMove / scale / this.scale) * 100;
           } else if (type === "tr" && width > 5 && height > 5) {
             width += (-maxMove / this.scale) * 100;
             left -= (-maxMove / this.scale) * 100;
-            height += (-maxMove / this.scale) * 100;
+            height += (-maxMove / scale / this.scale) * 100;
           }
         } else if (mode === "br") {
           if (type === "br") {
             width += (maxMove / this.scale) * 100;
-            height += (maxMove / this.scale) * 100;
+            height += (maxMove / scale / this.scale) * 100;
           } else if (type === "tl" && width > 5 && height > 5) {
             width += (-maxMove / this.scale) * 100;
-            height += (-maxMove / this.scale) * 100;
+            height += (-maxMove / scale / this.scale) * 100;
           }
         }
         this.$store.commit("editor/changeLayer", {
@@ -256,6 +258,7 @@ export default {
 .image-layer {
   position: absolute;
   transform-origin: 0px 0px 0px;
+  user-select: none;
 
   span {
     user-select: none;

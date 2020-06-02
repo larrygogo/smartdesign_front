@@ -34,8 +34,7 @@
         :width="item.style.width"
         :height="item.style.height"
         :opacity="item.style.opacity"
-        :scaleX="item.style.scaleX"
-        :scaleY="item.style.scaleY"
+        :transform="item.style.transform"
       />
     </template>
   </div>

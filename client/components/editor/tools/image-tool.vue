@@ -54,21 +54,25 @@ export default {
     scaleX: {
       get() {
         return this.layers[this.currentIndex].style
-          ? this.layers[this.currentIndex].style.scaleX
+          ? this.layers[this.currentIndex].style.transform.xx
           : 1;
       },
       set(value) {
-        this.changeLayer("scaleX", value);
+        const transform = Object.assign({}, this.layers[this.currentIndex].style.transform)
+        transform.xx = value
+        this.changeLayer("transform", transform);
       }
     },
     scaleY: {
       get() {
         return this.layers[this.currentIndex].style
-          ? this.layers[this.currentIndex].style.scaleY
+          ? this.layers[this.currentIndex].style.transform.yy
           : 1;
       },
       set(value) {
-        this.changeLayer("scaleY", value);
+        const transform = Object.assign({}, this.layers[this.currentIndex].style.transform)
+        transform.yy = value
+        this.changeLayer("transform", transform);
       }
     },
     opacity: {
