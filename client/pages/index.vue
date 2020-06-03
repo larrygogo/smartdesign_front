@@ -7,13 +7,13 @@
         <li class="nav-item" :class="{active: activeNav === 3}" @click="selectNav(3)">最新</li>
       </ul>
       <ul class="nav-bar">
-        <li class="nav-item btn" v-if="isAdmin" @click="$router.push('/template/upload')">上传模板</li>
+        <li class="nav-item btn" v-if="isAdmin" @click="openUploadDialog">上传模板</li>
       </ul>
     </div>
     <section class="template">
       <el-row :gutter="20">
         <el-col
-          v-for="(item, index) in templates"
+          v-for="item in templates"
           :key="item._id"
           :xs="24"
           :sm="12"
@@ -25,17 +25,19 @@
         </el-col>
       </el-row>
     </section>
+    <upload-dialog :show="uploadDialog" @close="closeUploadDialog"/>
   </div>
 </template>
 
 <script>
-import env from "../../env"
 import { mapState } from 'vuex'
+import UploadDialog from '@/components/upload-dialog'
 import TemplateCover from "../components/list/template-cover";
 export default {
   middleware: "auth",
   components: {
-    TemplateCover
+    TemplateCover,
+    UploadDialog
   },
   computed: mapState({
     templates: state => state.template.list,
@@ -46,14 +48,19 @@ export default {
   },
   data() {
     return {
-      type: "latest",
+      uploadDialog: false,
       activeNav: 1,
-      host: "http://localhost:3300"
     };
   },
   methods: {
     selectNav(nav) {
       this.activeNav = nav  
+    },
+    openUploadDialog() {
+      this.uploadDialog = true
+    },
+    closeUploadDialog() {
+      this.uploadDialog = false
     }
   }
 };
