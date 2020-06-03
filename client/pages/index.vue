@@ -21,7 +21,7 @@
           :lg="6"
           :xl="4"
         >
-          <template-cover :id="item._id" :name="item.name" :cover="host + item.cover" />
+          <template-cover :id="item._id" :name="item.name" :cover="item.cover" />
         </el-col>
       </el-row>
     </section>

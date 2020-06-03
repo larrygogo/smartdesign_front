@@ -45,11 +45,6 @@ export default {
       }
   },
   methods: {
-    zoom(scale) {
-        if(scale > 5 && scale < 155) {
-            this.scale = scale;
-        }
-    },
     initTool() {
         this.$store.commit("editor/setTemplate", { attr: "currentIndex", value: -1})
     }

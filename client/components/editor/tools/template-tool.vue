@@ -13,6 +13,9 @@
           v-model="background"
         ></el-color-picker>
       </el-form-item>
+      <el-form-item>
+        <el-button class="input" type="primary" @click="render">生成图片</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -49,6 +52,9 @@ export default {
   methods: {
     setTemplateInfo(attr, value) {
       this.$store.commit("editor/setTemplate", { attr, value });
+    },
+    render() {
+      this.$store.dispatch("editor/render")
     }
   }
 };

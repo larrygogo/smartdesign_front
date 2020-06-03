@@ -1,7 +1,7 @@
 <template>
   <div
     class="template-editor"
-    :style="{width: `${width}px`, height: `${height}px`, background: background, transform: `scale(${scale / 100})`}"
+    :style="{width: `${width}px`, minWidth: `${width}px`, height: `${height}px`, background: background, transform: `scale(${scale / 100})`}"
     @click.self="seleteTemplate"
   >
     <template v-for="(item, index) in layers">

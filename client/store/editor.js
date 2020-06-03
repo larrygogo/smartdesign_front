@@ -103,5 +103,15 @@ export const actions = {
         } else {
             commit("initTemplate")
         }
+    },
+    async render({state}) {
+        const template = {
+            width: state.width,
+            height: state.height,
+            background: state.background,
+            layers: state.layers
+        }
+        const res = await this.$axios.post("/template/render", { template })
+            .then(res => res.data)
     }
 }

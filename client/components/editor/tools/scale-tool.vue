@@ -3,7 +3,7 @@
     <el-button class="scale-btn" type="text" @click="zoomOut" title="缩小">
       <i class="el-icon-minus" />
     </el-button>
-    <span class="scale-value">{{scale}}%</span>
+    <span class="scale-value">{{ scale }}%</span>
     <el-button class="scale-btn" type="text" @click="zoomIn" title="放大">
       <i class="el-icon-plus" />
     </el-button>
@@ -16,20 +16,55 @@
 <script>
 import { mapState } from "vuex";
 export default {
-  computed: mapState({
-    scale: state => state.editor.templateScale
-  }),
+  computed: {
+    width: {
+      get() {
+        const width = this.$store.state.editor.width
+        return width
+      }
+    },
+    height: {
+      get() {
+        const height = this.$store.state.editor.height
+        return height
+      }
+    },
+    scale: {
+      get() {
+        const scale = this.$store.state.editor.templateScale
+        return scale
+      },
+      set(value) {
+        this.$store.commit("editor/setTemplate", { attr: "scale", value });
+      }
+    }
+  },
+  data() {
+    return {
+      defaultScale: 100
+    }
+  },
+  mounted() {
+    const winWidth = window.innerWidth
+    const winHeight = window.innerHeight
+    if(this.width / this.height > 1 && this.width > winWidth * 0.8) {
+      this.defaultScale = Math.ceil(winWidth / this.width * 0.8 * 100)
+    } else if(this.width / this.height < 1 && this.height > winHeight * 0.9){
+      this.defaultScale = Math.ceil(winHeight / this.height * 0.9 * 100)
+    }
+    this.scale = this.defaultScale
+  },
   methods: {
     zoomOut() {
-      const scale = this.scale - 5;
-      this.$store.commit("editor/setTemplate", { attr: "scale", value: scale });
+      if(this.scale > 10)
+        this.scale -= 5
     },
     zoomIn() {
-      const scale = this.scale + 5;
-      this.$store.commit("editor/setTemplate", { attr: "scale", value: scale });
+      if(this.scale < 150)
+      this.scale += 5
     },
     reduction() {
-      this.$store.commit("editor/setTemplate", { attr: "scale", value: 100 });
+      this.scale = this.defaultScale
     }
   }
 };
