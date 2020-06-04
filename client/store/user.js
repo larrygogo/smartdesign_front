@@ -61,8 +61,13 @@ export const actions = {
       headers: {
         Authorization: "Bearer " + code
       }
+    }).then(res => {
+      if(res.status === 200 && res.data.code === "0") {
+        this.$massage.success("验证成功")
+        this.$router.replace("/login")
+      }
     }).catch(e => {
-      console.log(e)
+      this.$massage.error("验证失败")
     })
   },
 }
