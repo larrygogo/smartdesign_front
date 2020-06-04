@@ -28,9 +28,6 @@
 <script>
 import { mapState } from "vuex"
 export default {
-  computed: mapState({
-    nickname: state => state.manager.nickname
-  }),
   created() {
   },
   methods: {

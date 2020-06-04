@@ -38,7 +38,7 @@
 
 <script>
 export default {
-  layout: "auth",
+  layout: "nonAuth",
   data() {
     return {
       form: {
@@ -48,10 +48,8 @@ export default {
     }
   },
   methods: {
-    async login() {
-      this.$store.dispatch("user/login", this.form).then(() => {
-        this.$router.push("/")
-      })
+    login() {
+      this.$store.dispatch("user/login", this.form)
     }
   }
 }

@@ -1,3 +1,4 @@
+import axios from '@nuxtjs/axios'
 export const state = () => ({
   token: null,
   email: "",
@@ -19,23 +20,49 @@ export const mutations = {
 }
 
 export const actions = {
-  async login({ commit }, params) {
+  async login({
+    commit
+  }, params) {
     const res = await this.$axios.post("/user/token", params)
-      .then(res => res.data)
-    commit("SET_TOKEN", res.data.token)
-    this.$cookies.set("token", res.data.token, {
+    commit("SET_TOKEN", res.data.data.token)
+    this.$cookies.set("token", res.data.data.token, {
       path: "/",
       maxAge: 2 * 60 * 60
     })
+    this.$router.push("/")
     return res
   },
-  async getUserInfo({ commit }) {
-    const res = await this.$axios.get("/user/info").then(res => res.data)
-    commit("SET_USERINFO", res.data)
+  async logout({
+    commit,
+    state
+  }) {
+    commit("SET_TOKEN", null)
+    commit("SET_USERINFO", {
+      email: "",
+      userId: "",
+      isAdmin: false,
+      verify: false
+    })
+  },
+  async getUserInfo({
+    commit
+  }) {
+    const res = await this.$axios.get("/user/info")
+    commit("SET_USERINFO", res.data.data)
     return res
   },
   async sendMail() {
     const res = await this.$axios.post("/user/verify/mail")
-    console.log(res.data)
-  }
+  },
+  async verify({}, code) {
+    return await this.$axios({
+      method: "post",
+      url: "/user/verify",
+      headers: {
+        Authorization: "Bearer " + code
+      }
+    }).catch(e => {
+      console.log(e)
+    })
+  },
 }

@@ -34,7 +34,7 @@ import { mapState } from 'vuex'
 import UploadDialog from '@/components/upload/upload-template'
 import TemplateCover from "../components/list/template-cover";
 export default {
-  middleware: "auth",
+  middleware: "verify",
   components: {
     TemplateCover,
     UploadDialog

@@ -15,7 +15,7 @@
             class="login-btn ripple"
             type="primary"
             :disabled="!code"
-            @click="login">点 击 验 证</el-button>
+            @click="verify">点 击 验 证</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -24,25 +24,22 @@
 
 <script>
 export default {
-  layout: "auth",
+  layout: "nonAuth",
   data() {
     return {
       code: ""
     }
   },
-  mounted() {
+  created() {
     const {code} = this.$route.query
-    if(!code) {
-      
-    } else {
+    console.log(code)
+    if(code) {
       this.code = code
     }
   },
   methods: {
-    async login() {
-      this.$store.dispatch("user/login", this.form).then(() => {
-        this.$router.push("/")
-      })
+    async verify() {
+      const res = await this.$store.dispatch("user/verify", this.code)
     }
   }
 }

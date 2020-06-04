@@ -19,10 +19,10 @@ import ImageTool from "../components/editor/tools/image-tool";
 import TemplateTool from "../components/editor/tools/template-tool";
 import layersTool from "../components/editor/tools/layers-tool";
 export default {
+  middleware: "verify",
   head: {
     title: "编辑器"
   },
-  middleware: "auth",
   components: {
     Slider,
     ScaleTool,

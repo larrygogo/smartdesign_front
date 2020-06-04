@@ -54,13 +54,12 @@
 <script>
 import { mapState } from "vuex"
 export default {
+  name: "default",
+  middleware: "auth",
   computed: mapState({
     token: state => state.user.token,
     userId: state => state.user.userId
   }),
-  created() {
-    this.$store.dispatch("user/getUserInfo")
-  },
   methods: {
     userAction(command) {
       if (command === "layout") {
@@ -70,11 +69,11 @@ export default {
           type: "warning"
         })
           .then(() => {
-            this.$store.dispatch("manager/logout").then(() => {
+            this.$store.dispatch("user/logout").then(() => {
               this.$cookies.remove("token", {
                 path: "/"
               })
-              this.$router.push("/login")
+              this.$router.replace("/login")
             })
           })
           .catch(() => {})

@@ -59,7 +59,7 @@
 
 <script>
 export default {
-  layout: "auth",
+  layout: "nonAuth",
   data() {
     return {
       disabled: true,
