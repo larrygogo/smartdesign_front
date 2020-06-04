@@ -37,7 +37,7 @@
         </el-form-item>
         <el-form-item prop="repassword">
           <el-input
-            v-model="form.password"
+            v-model="form.repassword"
             :disabled="disabled"
             class="input-box"
             type="password"
@@ -49,7 +49,7 @@
             class="login-btn ripple"
             :disabled="disabled"
             type="primary"
-            @click="login">注 册</el-button>
+            @click="register">注 册</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -62,18 +62,18 @@ export default {
   layout: "nonAuth",
   data() {
     return {
-      disabled: true,
+      disabled: false,
       form: {
         email: "",
-        password: ""
+        username: "",
+        password: "",
+        repassword: ""
       }
     }
   },
   methods: {
-    async login() {
-      this.$store.dispatch("user/login", this.form).then(() => {
-        this.$router.push("/")
-      })
+    async register() {
+      await this.$store.dispatch("user/register", this.form)
     }
   }
 }

@@ -32,6 +32,18 @@ export const actions = {
     this.$router.push("/")
     return res
   },
+  async register({}, params) {
+    return await this.$axios.post("/user/register", params).then(res => {
+      if(res.status === 200 && res.data.code === "0") {
+        this.$alert('恭喜你已注册成功，请登录后验证邮箱', '注册成功', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$router.replace("/login")
+          }
+        });
+      }
+    })
+  },
   async logout({
     commit,
     state
