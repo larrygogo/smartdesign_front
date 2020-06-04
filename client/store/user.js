@@ -1,4 +1,3 @@
-import axios from '@nuxtjs/axios'
 export const state = () => ({
   token: null,
   email: "",
