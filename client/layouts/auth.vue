@@ -21,6 +21,7 @@
       </ul>
     </header>
     <nuxt class="pc-body" />
+    <footer class="footer">ToolBee.cn ® 2020</footer>
   </div>
 </template>
 
@@ -147,5 +148,13 @@ export default {
     min-height: 100vh;
     padding: 80px 40px 40px 40px;
     background-color: #eff1f4;
+  }
+
+  .footer {
+    position: fixed;
+    width: 100%;
+    bottom: 20px;
+    color: #636363;
+    text-align: center;
   }
 </style>

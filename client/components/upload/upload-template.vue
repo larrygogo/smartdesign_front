@@ -23,6 +23,7 @@
           v-model="tag"
           size="small"
           ref="saveTagInput"
+          placeholder="回车确认输入"
           @keyup.enter.native="handleInputConfirm"
           @blur="handleInputConfirm"
         ></el-input>
@@ -56,7 +57,7 @@
 </template>
 
 <script>
-import env from "../../env";
+import env from "../../../env";
 export default {
   props: {
     show: {
@@ -146,11 +147,12 @@ export default {
         this.loading = false
         if(res.status === 200 && res.data.code === "0") {
           this.$message.success("上传成功")
-          this.$store.dispatch("template/getList")
           this.dialogVisible = false
         } else {
           this.$message.error("上传失败")
         }
+      }).catch(e => {
+        this.loading = false
       })
     }
   }

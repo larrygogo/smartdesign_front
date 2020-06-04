@@ -2,7 +2,8 @@ export const state = () => ({
   token: null,
   email: "",
   userId: "",
-  isAdmin: false
+  isAdmin: false,
+  verify: false
 })
 
 export const mutations = {
@@ -13,6 +14,7 @@ export const mutations = {
     state.userId = userInfo.userId
     state.email = userInfo.email
     state.isAdmin = userInfo.admin || false
+    state.verify = userInfo.verify || false
   }
 }
 
@@ -32,4 +34,8 @@ export const actions = {
     commit("SET_USERINFO", res.data)
     return res
   },
+  async sendMail() {
+    const res = await this.$axios.post("/user/verify/mail")
+    console.log(res.data)
+  }
 }

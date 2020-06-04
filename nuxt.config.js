@@ -3,14 +3,13 @@ const env = require("./env")
 module.exports = {
   srcDir: "client/",
   head: {
-    title: "Manager System",
+    title: "图必ToolBee",
     meta: [
       { lang: "zh-cn" },
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" }, { hid: "description", name: "description", content: "Meta description" }],
     link: [{ href: "https://fonts.googleapis.com/css2?family=Open+Sans&display=swap", ref: "stylesheet" }]
   },
-  // global css
   css: [],
   dev: process.env.NODE_ENV !== "production",
   server: {

@@ -5,7 +5,8 @@
         免费注册
       </h1>
       <p class="desc">
-        勤劳的小蜜蜂
+        {{ disabled ? '暂未开放' : '勤劳的小蜜蜂' }}，
+        <span>点击<n-link to="/login">这里登录</n-link></span>
       </p>
       <el-form
         ref="login"
@@ -13,6 +14,7 @@
         <el-form-item prop="userId">
           <el-input
             v-model="form.username"
+            :disabled="disabled"
             class="input-box"
             name="username"
             placeholder="请输入用户名" />
@@ -20,6 +22,7 @@
         <el-form-item prop="email">
           <el-input
             v-model="form.email"
+            :disabled="disabled"
             class="input-box"
             name="email"
             placeholder="请输入邮箱" />
@@ -27,6 +30,7 @@
         <el-form-item prop="password">
           <el-input
             v-model="form.password"
+            :disabled="disabled"
             class="input-box"
             type="password"
             placeholder="请输入密码" />
@@ -34,6 +38,7 @@
         <el-form-item prop="repassword">
           <el-input
             v-model="form.password"
+            :disabled="disabled"
             class="input-box"
             type="password"
             placeholder="再次输入密码"
@@ -42,8 +47,9 @@
         <el-form-item>
           <el-button
             class="login-btn ripple"
+            :disabled="disabled"
             type="primary"
-            @click="login">登录</el-button>
+            @click="login">注 册</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -56,6 +62,7 @@ export default {
   layout: "auth",
   data() {
     return {
+      disabled: true,
       form: {
         email: "",
         password: ""
@@ -120,6 +127,14 @@ export default {
       font-size: 14px;
       margin: 0;
       color: #c2c3c8;
+
+      a {
+        color: #636363;
+
+        &:hover {
+          color: #636363
+        }
+      }
     }
 
     .login-form {

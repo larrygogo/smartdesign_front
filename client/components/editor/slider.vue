@@ -4,8 +4,9 @@
       <li title="文本" @click="addTextLayer">
         <i class="iconfont icon-text"></i>
       </li>
-      <li title="图片" @click="addImageLayer">
+      <li title="图片" @click="checkImage" v-loading.full="loading">
         <i class="iconfont icon-image"></i>
+        <input class="image-file-input" id="imageFile" @change="handleFileChange" ref="imageFile" type="file" />
       </li>
     </ul>
     <ul class="slider-nav">
@@ -23,6 +24,13 @@ export default {
     ...mapState({
       count: state => state.editor.count
     }),
+    header: {
+      get() {
+        return {
+          Authorization: `Bearer ${this.$store.state.user.token}`
+        };
+      }
+    },
     layersTool: {
       get() {
         return this.$store.state.editor.tools.layers
@@ -35,7 +43,52 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      loading: false
+    }
+  },
   methods: {
+    checkImage() {
+      let inputDOM = this.$refs.imageFile;
+      inputDOM.click()
+    },
+    handleFileChange() {
+      let inputDOM = this.$refs.imageFile;
+      const file = inputDOM.files[0];// 通过DOM取文件数据
+      if(file) {
+        const size = Math.floor(file.size / 1024);//计算文件的大小　
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = (e) => {
+          const base64 = e.target.result;
+          const img = new Image();
+          img.src = base64;
+          img.onload = () => {
+            const width = img.naturalWidth
+            const height = img.naturalHeight
+            const formData = new FormData();
+            formData.append("file", file); 
+            const options = {  
+              url: '/template/uploadImage',
+              data: formData,
+              method: 'post',
+              headers: this.header
+            }
+            this.loading = true
+            this.$axios(options).then((res) => {
+              this.loading = false
+              if(res.status === 200 && res.data.code === "0") {
+                console.log(res.data)
+                this.addImageLayer(res.data.data, width, height)
+              } else {
+                this.$message.error("图片上传失败")
+              }
+            })
+          }
+        }
+      }
+    },
     addTextLayer() {
       this.$store.commit("editor/addLayer", {
         name: "文本" + this.count,
@@ -56,19 +109,18 @@ export default {
         }
       });
     },
-    addImageLayer() {
+    addImageLayer(src = "", width, height) {
       this.$store.commit("editor/addLayer", {
         name: "图像" + this.count,
         type: "image",
-        image: "/images/ls.png",
+        image: src,
         style: {
           top: 50,
           left: 50,
-          width: 200,
-          height: 200,
+          width: width,
+          height: height,
           opacity: 1,
-          scaleX: 1,
-          scaleY: 1
+          transform: {xx: 1, xy: 0, yx: 0, yy: 1, tx: 0, ty: 1}
         }
       });
     }
@@ -116,6 +168,10 @@ export default {
         .iconfont {
           color: #f8cc0b;
         }
+      }
+
+      .image-file-input {
+        display: none;
       }
     }
   }

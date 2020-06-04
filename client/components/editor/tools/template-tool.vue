@@ -14,9 +14,18 @@
         ></el-color-picker>
       </el-form-item>
       <el-form-item>
-        <el-button class="input" type="primary" @click="render">生成图片</el-button>
+        <el-button class="input" type="primary" @click="render" :loading="loading">生成图片</el-button>
       </el-form-item>
     </el-form>
+    <el-dialog
+      title="下载图片"
+      :visible.sync="showRender"
+      :close-on-click-modal="false"
+      width="50%">
+      <el-tooltip class="item" effect="dark" content="右键保存图片" placement="top">
+        <img style="width: 100%" :src="renderImg">
+      </el-tooltip>
+    </el-dialog>
   </div>
 </template>
 
@@ -29,7 +38,12 @@ export default {
         return this.$store.state.editor.width
       },
       set(value) {
-        this.setTemplateInfo("width", value)
+        if(Number(value) > 2000) {
+          this.$message.error("模板宽度不超过2000")
+        } else {
+          this.setTemplateInfo("width", Number(value))
+        }
+        
       }
     },
     height: {
@@ -37,7 +51,11 @@ export default {
         return this.$store.state.editor.height
       },
       set(value) {
-        this.setTemplateInfo("height", value)
+        if(Number(value) > 2000) {
+          this.$message.error("模板高度不超过2000")
+        } else {
+          this.setTemplateInfo("height", Number(value))
+        }
       }
     },
     background: {
@@ -49,12 +67,28 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      loading: false,
+      showRender: false,
+      renderImg: ""
+    }
+  },
   methods: {
     setTemplateInfo(attr, value) {
       this.$store.commit("editor/setTemplate", { attr, value });
     },
     render() {
-      this.$store.dispatch("editor/render")
+      this.loading = true
+      this.$store.dispatch("editor/render").then(res => {
+        this.loading = false
+        if(res.status === 200 && res.data.code === "0") {
+          this.showRender = true
+          this.renderImg = res.data.data
+        } else {
+          this.$message.error("图片渲染失败")
+        }
+      })
     }
   }
 };
@@ -89,5 +123,10 @@ export default {
     padding: 0 20px;
     overflow: hidden;
   }
+}
+
+.render-tips {
+  font-size: 14px;
+  margin-bottom: 20px;
 }
 </style>

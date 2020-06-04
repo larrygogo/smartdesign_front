@@ -2,34 +2,20 @@
   <div class="page">
     <div class="login-container">
       <h1 class="title">
-        欢迎访问
+        邮箱验证
       </h1>
       <p class="desc">
-        <span>没有账号？点击<n-link to="/register">这里注册</n-link></span>
+        <span>点击下方按钮验证你的账号</span>
       </p>
       <el-form
         ref="login"
         class="login-form">
-        <el-form-item prop="userId">
-          <el-input
-            v-model="form.email"
-            class="input-box"
-            name="username"
-            placeholder="请输入邮箱" />
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            v-model="form.password"
-            class="input-box"
-            type="password"
-            placeholder="请输入密码"
-            @keyup.enter.native="login" />
-        </el-form-item>
         <el-form-item>
           <el-button
             class="login-btn ripple"
             type="primary"
-            @click="login">登录</el-button>
+            :disabled="!code"
+            @click="login">点 击 验 证</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -41,10 +27,15 @@ export default {
   layout: "auth",
   data() {
     return {
-      form: {
-        email: "",
-        password: ""
-      }
+      code: ""
+    }
+  },
+  mounted() {
+    const {code} = this.$route.query
+    if(!code) {
+      
+    } else {
+      this.code = code
     }
   },
   methods: {
@@ -76,21 +67,18 @@ export default {
 
   .login-container {
     box-sizing: border-box;
-    width: 720px;
+    width: 420px;
     padding: 50px 40px;
     margin: 0 auto;
     background-color: #fefefe;
     box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.1);
 
     border-radius: 20px;
-    background-image:  url(~assets/images/logo1.png);
     background-size: 300px 300px;
     background-position: 40px 0px;
     background-repeat: no-repeat;
-    padding-left: 400px;
 
     .logo {
-      width: 80%;
       height: auto;
     }
 

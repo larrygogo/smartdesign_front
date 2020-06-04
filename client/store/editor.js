@@ -111,7 +111,6 @@ export const actions = {
             background: state.background,
             layers: state.layers
         }
-        const res = await this.$axios.post("/template/render", { template })
-            .then(res => res.data)
+        return await this.$axios.post("/template/render", { template })
     }
 }
