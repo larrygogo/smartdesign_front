@@ -41,7 +41,6 @@ module.exports = {
     timezone: true
   },
   build: {
-    cssSourceMap: process.env.NODE_ENV !== "production",
     babel: {
       plugins: [
         "@babel/plugin-proposal-optional-chaining",
