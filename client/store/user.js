@@ -37,7 +37,11 @@ export const actions = {
   async register({}, params) {
     await this.$axios.post("/user/register", params).then(res => {
       if(res.status === 200 && res.data.code === "0") {
-        this.$massage.success("恭喜你已注册成功，请登录后验证邮箱")
+        Message({
+          showClose: true,
+          message: "恭喜你已注册成功，请登录后验证邮箱",
+          type: 'success'
+        })
         this.$router.replace("/login")
       }
     })

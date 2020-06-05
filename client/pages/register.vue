@@ -9,9 +9,11 @@
         <span>点击<n-link to="/login">这里登录</n-link></span>
       </p>
       <el-form
-        ref="login"
+        :model="form"
+        :rules="rules"
+        ref="registerForm"
         class="login-form">
-        <el-form-item prop="userId">
+        <el-form-item prop="username">
           <el-input
             v-model="form.username"
             :disabled="disabled"
@@ -61,6 +63,15 @@
 export default {
   layout: "nonAuth",
   data() {
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.form.password) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
     return {
       disabled: false,
       form: {
@@ -68,12 +79,37 @@ export default {
         username: "",
         password: "",
         repassword: ""
+      },
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' },
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] },
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur' },
+        ],
+        repassword: [
+          { validator: validatePass2, trigger: 'blur' }
+        ]
       }
     }
   },
   methods: {
-    async register() {
-      await this.$store.dispatch("user/register", this.form)
+    register() {
+      this.$refs["registerForm"].validate(async (valid) => {
+        console.log(valid)
+        if(valid) {
+          await this.$store.dispatch("user/register", this.form)
+          return true
+        } else {
+          return false;
+        }
+      })
     }
   }
 }
