@@ -49,6 +49,7 @@
         <el-form-item>
           <el-button
             class="login-btn ripple"
+            :loading="loading"
             :disabled="disabled"
             type="primary"
             @click="register">注 册</el-button>
@@ -74,6 +75,7 @@ export default {
     };
     return {
       disabled: false,
+      loading: false,
       form: {
         email: "",
         username: "",
@@ -102,9 +104,10 @@ export default {
   methods: {
     register() {
       this.$refs["registerForm"].validate(async (valid) => {
-        console.log(valid)
         if(valid) {
+          this.loading = true
           await this.$store.dispatch("user/register", this.form)
+          this.loading = false
           return true
         } else {
           return false;

@@ -8,9 +8,11 @@
         <span>没有账号？点击<n-link to="/register">这里注册</n-link></span>
       </p>
       <el-form
-        ref="login"
+        :model="form"
+        :rules="rules"
+        ref="loginForm"
         class="login-form">
-        <el-form-item prop="userId">
+        <el-form-item prop="email">
           <el-input
             v-model="form.email"
             class="input-box"
@@ -46,14 +48,31 @@ export default {
       form: {
         email: "",
         password: ""
+      },
+      rules: {
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] },
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur' },
+        ]
       }
     }
   },
   methods: {
-    async login() {
-      this.loading = true
-      await this.$store.dispatch("user/login", this.form)
-      this.loading = false
+    login() {
+      this.$refs["loginForm"].validate(async (valid) => {
+        if(valid) {
+          this.loading = true
+          await this.$store.dispatch("user/login", this.form)
+          this.loading = false
+          return true
+        } else {
+          return false;
+        }
+      })
     }
   }
 }
