@@ -48,8 +48,8 @@ export default {
     }
   },
   methods: {
-    login() {
-      this.$store.dispatch("user/login", this.form)
+    async login() {
+      await this.$store.dispatch("user/login", this.form)
     }
   }
 }
