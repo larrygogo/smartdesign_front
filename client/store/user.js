@@ -1,4 +1,4 @@
-import {MessageBox} from 'element-ui'
+import {Message} from 'element-ui'
 export const state = () => ({
   token: null,
   email: "",
@@ -64,7 +64,7 @@ export const actions = {
   async sendMail() {
     const res = await this.$axios.post("/user/verify/mail")
   },
-  async verify({}, code) {
+  async verify({state}, code) {
     return await this.$axios({
       method: "post",
       url: "/user/verify",
@@ -72,12 +72,14 @@ export const actions = {
         Authorization: "Bearer " + code
       }
     }).then(res => {
+      console.log(res.status === 200 && res.data.code === "0")
       if(res.status === 200 && res.data.code === "0") {
-        this.$massage.success("验证成功")
+        Message.success("验证成功")
         this.$router.replace("/login")
       }
     }).catch(e => {
-      this.$massage.error("验证失败")
+      console.log(e)
+      Message.error("验证失败")
     })
   },
 }

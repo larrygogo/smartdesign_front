@@ -5,6 +5,9 @@
         邮箱验证
       </h1>
       <p class="desc">
+        <span>Hi, <b style="color: #333">{{name}}</b></span>
+      </p>
+      <p class="desc">
         <span>点击下方按钮验证你的账号</span>
       </p>
       <el-form
@@ -14,6 +17,7 @@
           <el-button
             class="login-btn ripple"
             type="primary"
+            :loading="loading"
             :disabled="!code"
             @click="verify">点 击 验 证</el-button>
         </el-form-item>
@@ -27,19 +31,23 @@ export default {
   layout: "nonAuth",
   data() {
     return {
-      code: ""
+      loading: false,
+      code: "",
+      name: ""
     }
   },
   created() {
-    const {code} = this.$route.query
-    console.log(code)
-    if(code) {
+    const {code, name} = this.$route.query
+    if(code && name) {
+      this.name = name
       this.code = code
     }
   },
   methods: {
     async verify() {
-      const res = await this.$store.dispatch("user/verify", this.code)
+      this.loading = true
+      await this.$store.dispatch("user/verify", this.code)
+      this.loading = false
     }
   }
 }
@@ -90,6 +98,7 @@ export default {
       font-size: 14px;
       margin: 0;
       color: #c2c3c8;
+      margin-bottom: 10px;
 
       a {
         color: #636363;
