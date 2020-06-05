@@ -96,10 +96,10 @@ export const mutations = {
 
 export const actions = {
     async getTemplate({commit}, id) {
-        try {
-            const res = await this.$axios.get("/template/info?id=" + id)
+        const res = await this.$axios.get("/template/info?id=" + id)
+        if(res.status === 200 && res.data.code === "0") {
             commit("loadTemplate", res.data)
-        } catch (e) {
+        } else {
             commit("initTemplate")
         }
     },

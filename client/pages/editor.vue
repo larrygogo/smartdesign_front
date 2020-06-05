@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     initTool() {
-        this.$store.commit("editor/setTemplate", { attr: "currentIndex", value: -1})
+      this.$store.commit("editor/setTemplate", { attr: "currentIndex", value: -1})
     }
   }
 };
