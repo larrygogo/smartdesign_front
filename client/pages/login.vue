@@ -29,6 +29,7 @@
           <el-button
             class="login-btn ripple"
             type="primary"
+            :loading="loading"
             @click="login">登录</el-button>
         </el-form-item>
       </el-form>
@@ -41,6 +42,7 @@ export default {
   layout: "nonAuth",
   data() {
     return {
+      loading: false,
       form: {
         email: "",
         password: ""
@@ -48,8 +50,10 @@ export default {
     }
   },
   methods: {
-    login() {
-      this.$store.dispatch("user/login", this.form)
+    async login() {
+      this.loading = true
+      await this.$store.dispatch("user/login", this.form)
+      this.loading = false
     }
   }
 }
