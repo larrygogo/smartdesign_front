@@ -37,7 +37,7 @@ export default {
       scale: 100
     };
   },
-  mounted() {
+  created() {
       const { id } = this.$route.query
       this.$store.commit("editor/initTemplate")
       if(id) {

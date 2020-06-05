@@ -98,7 +98,7 @@ export const actions = {
     async getTemplate({commit}, id) {
         const res = await this.$axios.get("/template/info?id=" + id)
         if(res.status === 200 && res.data.code === "0") {
-            commit("loadTemplate", res.data)
+            commit("loadTemplate", res.data.data)
         } else {
             commit("initTemplate")
         }
