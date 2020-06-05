@@ -24,12 +24,14 @@ export const actions = {
     commit
   }, params) {
     await this.$axios.post("/user/token", params).then(res => {
-      commit("SET_TOKEN", res.data.data.token)
-      this.$cookies.set("token", res.data.data.token, {
-        path: "/",
-        maxAge: 2 * 60 * 60
-      })
-      this.$router.push("/")
+      if(res.status === 200 &&  res.data.code === "0") {
+        commit("SET_TOKEN", res.data.data.token)
+        this.$cookies.set("token", res.data.data.token, {
+          path: "/",
+          maxAge: 2 * 60 * 60
+        })
+        this.$router.push("/")
+      }
     })
   },
   async register({}, params) {
