@@ -23,17 +23,17 @@ export const actions = {
   async login({
     commit
   }, params) {
-    const res = await this.$axios.post("/user/token", params)
-    commit("SET_TOKEN", res.data.data.token)
-    this.$cookies.set("token", res.data.data.token, {
-      path: "/",
-      maxAge: 2 * 60 * 60
+    await this.$axios.post("/user/token", params).then(res => {
+      commit("SET_TOKEN", res.data.data.token)
+      this.$cookies.set("token", res.data.data.token, {
+        path: "/",
+        maxAge: 2 * 60 * 60
+      })
+      this.$router.push("/")
     })
-    this.$router.push("/")
-    return res
   },
   async register({}, params) {
-    return await this.$axios.post("/user/register", params).then(res => {
+    await this.$axios.post("/user/register", params).then(res => {
       if(res.status === 200 && res.data.code === "0") {
         this.$massage.success("恭喜你已注册成功，请登录后验证邮箱")
         this.$router.replace("/login")

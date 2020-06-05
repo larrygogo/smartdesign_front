@@ -24,13 +24,14 @@ export const actions = {
   async getList({
     state, commit
   }) {
-    const res = await this.$axios.get(`/template/list?page=${state.page}&pageSize=${state.pageSize}`,)
-    if(res.status === 200 && res.data.code === "0") {
-      commit("SET_COUNT", res.data.data.count)
-      return res.data.data.rows
-    } else {
-      return []
-    }
+    return await this.$axios.get(`/template/list?page=${state.page}&pageSize=${state.pageSize}`).then(res => {
+      if(res.status === 200 && res.data.code === "0") {
+        commit("SET_COUNT", res.data.data.count)
+        return res.data.data.rows
+      } else {
+        return []
+      }
+    })
   },
   async createTemplate({}, {
     name,

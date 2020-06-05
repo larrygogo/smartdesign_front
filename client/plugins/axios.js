@@ -16,9 +16,10 @@ export default function({ $axios, store, redirect }) {
       Message.error("验证失败")
     } else if (err.status === 401 || err.status === 403) {
       redirect("/login")
+      Message.error(err.message)
     } else {
       Message.error(err.message)
     }
-    
+    return error
   })
 }
