@@ -6,7 +6,7 @@ module.exports = {
   },
   production: {
     NODE_ENV: "production",
-    ENV_API: "http://api.toolbee.cn",
+    ENV_API: "http://api.toolbee.larryzheng.cn",
     ROUTER_BASE: "/"
   }
 }
