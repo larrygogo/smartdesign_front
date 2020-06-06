@@ -20,7 +20,7 @@
           :cover="item.cover"
           :username="item.author.username" />
       </div>
-      <div class="load" v-loading="loading">
+      <div class="load" v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.1)">
         <el-button v-if="count !== templates.length" class="load-more" size="small" @click="getMore">加载更多</el-button>
         <p class="no-more" v-else>没有更多了 (#^.^#)</p>
       </div>
@@ -172,6 +172,7 @@ export default {
     .load {
       text-align: center;
       margin: 20px 0;
+      height: 100px;
       
       .load-more {
       }
