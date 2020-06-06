@@ -5,6 +5,7 @@
       :action="host + '/template/upload'"
       :headers="header"
       :on-success="successUpload"
+      :with-credentials="true"
       :on-error="errorUpload"
       :limit="1"
       :file-list="fileList"
