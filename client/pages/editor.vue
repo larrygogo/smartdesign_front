@@ -1,5 +1,5 @@
 <template>
-  <div class="editor" @click.self="initTool">
+  <div class="editor" @click.self="initTool" v-loading="loading">
     <template-editor />
     <layers-tool />
     <slider />
@@ -34,14 +34,20 @@ export default {
   },
   data() {
     return {
+      loading: false,
       scale: 100
     };
   },
   created() {
       const { id } = this.$route.query
+      this.loading = true
       this.$store.commit("editor/initTemplate")
       if(id) {
-        this.$store.dispatch("editor/getTemplate", id)
+        this.$store.dispatch("editor/getTemplate", id).finally(() => {
+          this.loading = false
+        })
+      } else {
+        this.loading = false
       }
   },
   methods: {
