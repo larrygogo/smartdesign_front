@@ -20,7 +20,7 @@
           :cover="item.cover"
           :username="item.author.username" />
       </div>
-      <div class="load">
+      <div class="load" v-loading="loading">
         <el-button v-if="count !== templates.length" class="load-more" size="small" @click="getMore">加载更多</el-button>
         <p class="no-more" v-else>没有更多了 (#^.^#)</p>
       </div>
@@ -74,6 +74,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       uploadDialog: false,
       activeNav: 1,
     };
@@ -91,7 +92,9 @@ export default {
     async initList() {
       this.templates = []
       this.page = 1
+      this.loading = true
       const list = await this.$store.dispatch("template/getList")
+      this.loading = false
       if(list.length < 1) {
         this.$message.error("加载失败")
       } else {
@@ -100,7 +103,9 @@ export default {
     },
     async getMore() {
       this.page += 1
+      this.loading = true
       const list = await this.$store.dispatch("template/getList")
+      this.loading = false
       if(list.length < 1) {
         this.$message.error("加载失败")
       } else {
