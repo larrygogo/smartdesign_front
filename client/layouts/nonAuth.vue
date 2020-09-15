@@ -21,7 +21,7 @@
       </ul>
     </header>
     <nuxt class="pc-body" />
-    <footer class="footer">ToolBee.cn ® 2020</footer>
+    <footer class="footer">ToolBee ® 2020</footer>
   </div>
 </template>
 
