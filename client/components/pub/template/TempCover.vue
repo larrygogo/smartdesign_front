@@ -1,32 +1,43 @@
 <template>
   <div class="template-item">
-    <div class="template-cover-row"  @click="toEditor(id)">
-      <img class="template-cover" :src="cover"/>
+    <div class="template-cover-row" @click="toEditor(id)">
+      <img class="template-cover" :src="host + cover" />
       <div class="template-mask">
-        <p class="username">{{username}}</p>
+        <p class="username">{{ username }}</p>
       </div>
     </div>
     <div class="template-info">
-      <p class="name">{{ name }}</p>
-      <el-dropdown class="more" trigger="click" v-if="isAdmin" @command="handleCommand">
+      <p class="name">
+        <a-tag v-if="showStatusTag" :color="getStatus() | statusColor"> {{ getStatus() | statusName }} </a-tag>{{ name }}
+      </p>
+      <el-dropdown
+        class="more"
+        trigger="click"
+        v-if="isAdmin"
+        @command="handleCommand"
+      >
         <span class="el-dropdown-link">
           <i class="el-icon-more el-icon--right" />
         </span>
         <el-dropdown-menu slot="dropdown">
           <!-- <el-dropdown-item icon="el-icon-edit">编辑</el-dropdown-item> -->
-          <el-dropdown-item icon="el-icon-delete" command="delete" style="color: #F56C6C">删除</el-dropdown-item>
+          <el-dropdown-item
+            icon="el-icon-delete"
+            command="delete"
+            style="color: #f56c6c"
+            >删除</el-dropdown-item
+          >
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <el-dialog
-      title="删除模板"
-      :visible.sync="dialogVisible"
-      width="30%">
+    <el-dialog title="删除模板" :visible.sync="dialogVisible" width="30%">
       <p class="delete-info">
-        <i class="el-icon-warning" style="color: #E6A23C"/>
+        <i class="el-icon-warning" style="color: #e6a23c" />
         <span>你确认要删除该模板吗？[ 操作无法撤销 ]</span>
       </p>
-      <el-checkbox v-model="bothResource" class="resource-check">同时删除模板素材文件</el-checkbox>
+      <el-checkbox v-model="bothResource" class="resource-check"
+        >同时删除模板素材文件</el-checkbox
+      >
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="checkDelete">确 定</el-button>
@@ -39,10 +50,34 @@
 import { mapState } from "vuex"
 export default {
     props: {
-        id: String,
-        name: String,
-        cover: String,
-        username: String
+      id: {
+        type: String,
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      cover: {
+        type: String,
+        required: true
+      },
+      username: {
+        type: String,
+        required: true
+      },
+      release: {
+        type: Boolean,
+        required: true
+      },
+      verify: {
+        type: Boolean,
+        required: true
+      },
+      showStatusTag: {
+        type: Boolean,
+        required: true
+      }
     },
     computed: {
       ...mapState({
@@ -65,8 +100,17 @@ export default {
         }
       }
     },
+    filters: {
+      statusColor: (status) => {
+        return status.color
+      },
+      statusName: (status) => {
+        return status.name
+      },
+    },
     data() {
       return {
+        host: process.env.ENV_API,
         dialogVisible: false,
         bothResource: false
       }
@@ -95,6 +139,15 @@ export default {
           }
           this.dialogVisible = false
         })
+      },
+      getStatus() {
+        if(!this.release) {
+          return { color: "blue", name: "未发布" }
+        } else if(!this.verify){
+          return { color: "orange", name: "审核中" }
+        } else {
+          return { color: "green", name: "已发布" }
+        }
       }
     }
 };
@@ -103,7 +156,7 @@ export default {
 <style lang="scss" scoped>
 .template-item {
   border-radius: 20px;
-  
+
   .template-cover-row {
     position: relative;
     max-width: 100%;
@@ -112,7 +165,6 @@ export default {
     overflow: hidden;
     border-radius: 5px;
     cursor: pointer !important;
-
   }
 
   .template-mask {
@@ -125,8 +177,26 @@ export default {
     width: 100%;
     height: 100%;
     opacity: 0;
-    transition: all .3s;
-    background-image: linear-gradient(180deg, transparent 62%, rgba(0,0,0,0.00345888) 63.94%, rgba(0,0,0,0.014204) 65.89%, rgba(0,0,0,0.0326639) 67.83%, rgba(0,0,0,0.0589645) 69.78%, rgba(0,0,0,0.0927099) 71.72%, rgba(0,0,0,0.132754) 73.67%, rgba(0,0,0,0.177076) 75.61%, rgba(0,0,0,0.222924) 77.56%, rgba(0,0,0,0.267246) 79.5%, rgba(0,0,0,0.30729) 81.44%, rgba(0,0,0,0.341035) 83.39%, rgba(0,0,0,0.367336) 85.33%, rgba(0,0,0,0.385796) 87.28%, rgba(0,0,0,0.396541) 89.22%, rgba(0,0,0,0.4) 91.17%);
+    transition: all 0.3s;
+    background-image: linear-gradient(
+      180deg,
+      transparent 62%,
+      rgba(0, 0, 0, 0.00345888) 63.94%,
+      rgba(0, 0, 0, 0.014204) 65.89%,
+      rgba(0, 0, 0, 0.0326639) 67.83%,
+      rgba(0, 0, 0, 0.0589645) 69.78%,
+      rgba(0, 0, 0, 0.0927099) 71.72%,
+      rgba(0, 0, 0, 0.132754) 73.67%,
+      rgba(0, 0, 0, 0.177076) 75.61%,
+      rgba(0, 0, 0, 0.222924) 77.56%,
+      rgba(0, 0, 0, 0.267246) 79.5%,
+      rgba(0, 0, 0, 0.30729) 81.44%,
+      rgba(0, 0, 0, 0.341035) 83.39%,
+      rgba(0, 0, 0, 0.367336) 85.33%,
+      rgba(0, 0, 0, 0.385796) 87.28%,
+      rgba(0, 0, 0, 0.396541) 89.22%,
+      rgba(0, 0, 0, 0.4) 91.17%
+    );
 
     &:hover {
       opacity: 1;
@@ -171,7 +241,7 @@ export default {
     font-size: 12px;
     margin-top: 10px;
     font-weight: 400;
-    color: #999
+    color: #999;
   }
 }
 </style>

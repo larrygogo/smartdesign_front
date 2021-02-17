@@ -1,7 +1,15 @@
 <template>
   <div
     class="template-editor"
-    :style="{width: `${width}px`, minWidth: `${width}px`, height: `${height}px`, background: background, transform: `scale(${scale / 100})`}"
+    :style="{
+      position: 'absolute',
+      left: `calc(50% - 110px - ${width / 2}px`,
+      width: `${width}px`, 
+      minWidth: `${width}px`, 
+      height: `${height}px`, 
+      background: background, 
+      transform: `scale(${scale / 100})`,
+    }"
     @click.self="seleteTemplate"
   >
     <template v-for="(item, index) in layers">
@@ -17,6 +25,7 @@
         :color="item.style.color"
         :fontSize="item.style.fontSize"
         :fontFamily="item.style.fontFamily"
+        :fontStyle="item.style.fontStyle"
         :fontWeight="item.style.fontWeight"
         :lineHeight="item.style.lineHeight"
         :textAlign="item.style.textAlign"

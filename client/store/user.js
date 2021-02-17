@@ -4,7 +4,8 @@ export const state = () => ({
   email: "",
   userId: "",
   isAdmin: false,
-  verify: false
+  verify: false,
+  workList: []
 })
 
 export const mutations = {
@@ -16,6 +17,9 @@ export const mutations = {
     state.email = userInfo.email
     state.isAdmin = userInfo.admin || false
     state.verify = userInfo.verify || false
+  },
+  SET_WORK_LIST: (state, workList) => {
+    state.workList = workList
   }
 }
 
@@ -23,7 +27,7 @@ export const actions = {
   async login({
     commit
   }, params) {
-    await this.$axios.post("/user/token", params).then(res => {
+    await this.$axios.post("/pub/user/token", params).then(res => {
       if(res.status === 200 &&  res.data.code === "0") {
         commit("SET_TOKEN", res.data.data.token)
         this.$cookies.set("token", res.data.data.token, {
@@ -35,7 +39,7 @@ export const actions = {
     })
   },
   async register({}, params) {
-    await this.$axios.post("/user/register", params).then(res => {
+    await this.$axios.post("/pub/user/register", params).then(res => {
       if(res.status === 200 && res.data.code === "0") {
         Message({
           showClose: true,
@@ -84,6 +88,18 @@ export const actions = {
     }).catch(e => {
       console.log(e)
       Message.error("验证失败")
+    })
+  },
+  async getWorkList({
+    state, commit
+  }) {
+    return await this.$axios.get(`/user/work/list?page=${state.page}&pageSize=${state.pageSize}`).then(res => {
+      if(res.status === 200 && res.data.code === "0") {
+        commit("SET_WORK_LIST", res.data.data.count)
+        return res.data.data.rows
+      } else {
+        return []
+      }
     })
   },
 }

@@ -9,11 +9,6 @@
         <input class="image-file-input" id="imageFile" @change="handleFileChange" ref="imageFile" type="file" />
       </li>
     </ul>
-    <ul class="slider-nav">
-      <li :class="{clicked: layersTool}" title="图层" @click="layersTool = !layersTool">
-        <i class="iconfont icon-layers"></i>
-      </li>
-    </ul>
   </div>
 </template>
 
@@ -31,17 +26,6 @@ export default {
         };
       }
     },
-    layersTool: {
-      get() {
-        return this.$store.state.editor.tools.layers
-      },
-      set(value) {
-        this.$store.commit("editor/setTemplate", {
-          attr: "layersTool",
-          value
-        })
-      }
-    }
   },
   data() {
     return {
@@ -93,11 +77,12 @@ export default {
       this.$store.commit("editor/addLayer", {
         name: "文本" + this.count,
         type: "text",
-        value: "默认文本",
+        value: "双击编辑文字",
         style: {
           top: 50,
           left: 50,
-          width: 200,
+          width: 240,
+          height: 34,
           color: "#000000",
           fontSize: 34,
           fontFamily: "Microsoft YaHei",
@@ -135,10 +120,10 @@ export default {
   left: 0;
   top: 60px;
   height: calc(100% - 60px);
-  background-color: #fff;
+  background-color: #2e2e31;
   width: 80px;
   padding: 20px 0 0;
-  border-right: 1px solid #f1f3f7;
+  border-right: 1px solid #464444;
 
   .slider-nav {
     list-style: none;

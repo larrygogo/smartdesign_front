@@ -1,79 +1,51 @@
 <template>
-  <div class="page">
+  <div class="page container">
     <div class="header">
       <ul class="nav-bar">
-        <li class="nav-item" :class="{active: activeNav === 1}" @click="selectNav(1)">全部</li>
+        <!-- <li class="nav-item" :class="{active: activeNav === 1}" @click="selectNav(1)">全部</li> -->
         <!-- <li class="nav-item" :class="{active: activeNav === 2}" @click="selectNav(2)">热门</li> -->
         <!-- <li class="nav-item" :class="{active: activeNav === 3}" @click="selectNav(3)">最新</li> -->
       </ul>
       <ul class="nav-bar">
-        <li class="nav-item btn" v-if="isAdmin" @click="openUploadDialog">上传模板</li>
+        <!-- <li class="nav-item btn" v-if="isAdmin" @click="openUploadDialog">
+          上传模板
+        </li> -->
       </ul>
     </div>
-    <section class="template">
-      <div class="template-list">
-        <template-cover 
-          v-for="item in templates" 
-          :key="item._id" 
-          :id="item._id" 
-          :name="item.name" 
-          :cover="item.cover"
-          :username="item.author.username" />
-      </div>
-      <div class="load" v-loading="loading" element-loading-background="#ddd">
-        <el-button v-if="count !== templates.length" class="load-more" size="small" @click="getMore">加载更多</el-button>
-        <p class="no-more" v-else>没有更多了 (#^.^#)</p>
-      </div>
-    </section>
-    <upload-dialog :show="uploadDialog" @close="closeUploadDialog"/>
+    <TempList
+      :templates="templates"
+      :page="page"
+      :pageSize="pageSize"
+      :count="count"
+      @changePage="getList"
+    />
+    <TempUploadDialog :show="uploadDialog" @close="closeUploadDialog" />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import UploadDialog from '@/components/upload/upload-template'
-import TemplateCover from "../components/list/template-cover";
+import TempUploadDialog from '@/components/upload/TempUploadDialog'
+import TempList from '@/components/pub/template/TempList'
 export default {
-  middleware: "verify",
   components: {
-    TemplateCover,
-    UploadDialog
+    TempList,
+    TempUploadDialog
   },
   computed: {
     ...mapState({
       isAdmin: state => state.user.isAdmin,
       count: state => state.template.count,
+      templates: state => state.template.list,
     }),
-    templates: {
-      get() {
-        return this.$store.state.template.list
-      },
-      set(value) {
-        this.$store.commit("template/SET_LIST", value)
-      }
-    },
-    page: {
-      get() {
-        return this.$store.state.template.page
-      },
-      set(value) {
-        this.$store.commit("template/SET_PAGE", value)
-      }
-    },
-    pageSize: {
-      get() {
-        return this.$store.state.template.pageSize
-      },
-      set(value) {
-        this.$store.commit("template/SET_PAGE_SIZE", value)
-      }
-    }
   },
   mounted() {
-    this.initList()
+    this.getList()
   },
   data() {
     return {
+      page: 1,
+      pageSize: 10,
       loading: false,
       uploadDialog: false,
       activeNav: 1,
@@ -89,29 +61,19 @@ export default {
     closeUploadDialog() {
       this.uploadDialog = false
     },
-    async initList() {
-      this.templates = []
-      this.page = 1
-      this.loading = true
-      const list = await this.$store.dispatch("template/getList")
-      this.loading = false
-      if(list.length < 1) {
-        this.$message.error("加载失败")
-      } else {
-        this.templates = list
+    getList(page, pageSize) {
+      if(!page) {
+        page = this.page
       }
+      if(!pageSize) {
+        pageSize = this.pageSize
+      }
+      this.loading = true
+      this.$store.dispatch("template/getList", { page, pageSize }).finally(() => {
+        this.loading = false
+      })
+      
     },
-    async getMore() {
-      this.page += 1
-      this.loading = true
-      const list = await this.$store.dispatch("template/getList")
-      this.loading = false
-      if(list.length < 1) {
-        this.$message.error("加载失败")
-      } else {
-        this.templates = [...this.templates, ...list]
-      }
-    }
   }
 };
 </script>
@@ -133,8 +95,8 @@ export default {
         border-radius: 5px;
         cursor: pointer;
         color: #636363;
-        transition: all .2s;
-        
+        transition: all 0.2s;
+
         &:not(:last-of-type) {
           margin-right: 20px;
         }
@@ -163,27 +125,5 @@ export default {
       }
     }
   }
-  .template {
-    .template-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, .8fr));
-      grid-gap: 20px;
-    }
-    .load {
-      text-align: center;
-      margin: 20px 0;
-      height: 100px;
-      
-      .load-more {
-      }
-
-      .no-more {
-        font-size: 12px;
-        color: #777;
-      }
-    }
-    
-  }
-  
 }
 </style>

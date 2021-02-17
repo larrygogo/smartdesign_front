@@ -1,7 +1,10 @@
-const env = require("./env")
 
 module.exports = {
   srcDir: "client/",
+  env: {
+    NODE_ENV: process.env.NODE_ENV,
+    ENV_API: process.env.ENV_API
+  },
   head: {
     title: "图必ToolBee",
     meta: [
@@ -29,10 +32,11 @@ module.exports = {
     "~/plugins/axios",
     "~/plugins/event",
     { src: "@/plugins/charts", ssr: false },
-    "~/plugins/element-ui"
+    { src: "@/plugins/antdv", ssr: false },
+    "~/plugins/element-ui",
   ],
   axios: {
-    baseURL: env[process.env.NODE_ENV].ENV_API,
+    baseURL: process.env.ENV_API,
     credentials: true, // 跨域携带证书
     timeout: 6000
   },
@@ -47,12 +51,12 @@ module.exports = {
         "@babel/plugin-proposal-nullish-coalescing-operator"
       ]
     },
-    postcss: {
-      plugins: {
-        "postcss-px2rem": {
-          remUnit: 16
-        }
-      }
-    }
+    // postcss: {
+    //   plugins: {
+    //     "postcss-px2rem": {
+    //       remUnit: 16
+    //     }
+    //   }
+    // }
   }
 }

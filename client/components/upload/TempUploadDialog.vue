@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import env from "../../../env";
 export default {
   props: {
     show: {
@@ -90,7 +89,7 @@ export default {
   data() {
     return {
       loading: false,
-      host: env[process.env.NODE_ENV].ENV_API,
+      host: process.env.ENV_API,
       inputVisible: false,
       fileList: [],
       filepath: "",

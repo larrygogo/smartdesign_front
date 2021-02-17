@@ -1,5 +1,5 @@
 <template>
-  <div class="verify-page">
+  <div class="verify-page container">
     <el-card class="verify-box" title="验证邮箱">
       <div slot="header" class="clearfix">
         <h3>验证邮箱</h3>

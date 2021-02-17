@@ -1,31 +1,41 @@
 <template>
   <div class="text-tool">
-    <el-form>
-      <el-form-item label="宽度">
-        <el-input class="input" v-model="width" placeholder="请输入内容"></el-input>
-      </el-form-item>
-      <el-form-item label="高度">
-        <el-input class="input" v-model="height" placeholder="请输入内容"></el-input>
-      </el-form-item>
-      <el-form-item label="背景">
-        <el-color-picker
-          class="input"
-          v-model="background"
-        ></el-color-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button class="input" type="primary" @click="render" :loading="loading">生成图片</el-button>
-      </el-form-item>
-    </el-form>
-    <el-dialog
-      title="下载图片"
-      :visible.sync="showRender"
-      :close-on-click-modal="false"
-      width="50%">
-      <el-tooltip class="item" effect="dark" content="右键保存图片" placement="top">
-        <img style="width: 100%" :src="renderImg">
-      </el-tooltip>
-    </el-dialog>
+    <div class="tool-item">
+      <div class="tool-line-item">
+        <span class="title">宽度</span>
+        <div class="block">
+          <a-input-number
+            :value="Math.ceil(width)"
+            :min="10"
+            :max="2000"
+            step="1"
+            @change="(e) => (width = e)"
+          />
+        </div>
+      </div>
+      <div class="tool-line-item">
+        <span class="title">高度</span>
+        <div class="block">
+          <a-input-number
+            :value="Math.ceil(height)"
+            :min="10"
+            :max="2000"
+            step="1"
+            @change="(e) => (height = e)"
+          />
+        </div>
+      </div>
+      <div class="tool-line-item">
+        <span class="title">背景色</span>
+        <div class="block">
+          <el-color-picker
+            class="input"
+            v-model="background"
+            :predefine="defaultColor"
+          ></el-color-picker>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -69,27 +79,23 @@ export default {
   },
   data() {
     return {
-      loading: false,
-      showRender: false,
-      renderImg: ""
+      defaultColor: [
+        "#000000",
+        "#ffffff",
+        "#ff4500",
+        "#ff8c00",
+        "#ffd700",
+        "#90ee90",
+        "#00ced1",
+        "#1e90ff",
+        "#c71585"
+      ]
     }
   },
   methods: {
     setTemplateInfo(attr, value) {
       this.$store.commit("editor/setTemplate", { attr, value });
     },
-    render() {
-      this.loading = true
-      this.$store.dispatch("editor/render").then(res => {
-        this.loading = false
-        if(res.status === 200 && res.data.code === "0") {
-          this.showRender = true
-          this.renderImg = res.data.data
-        } else {
-          this.$message.error("图片渲染失败")
-        }
-      })
-    }
   }
 };
 </script>
@@ -97,23 +103,62 @@ export default {
 <style lang="scss" scoped>
 @import url(~assets/font/iconfont.css);
 .text-tool {
-  position: absolute;
-  top: 60px;
-  right: 0;
-  height: calc(100% - 60px);
-  padding: 50px 20px;
-  width: 300px;
-  background-color: #fff;
-  text-align: center;
+
+  .tool-item {
+    margin-bottom: 20px;
+    text-align: left;
+
+    & > .title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .tool-line-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+
+      & > .title {
+        font-size: 14px;
+        margin-right: 20px;
+      }
+
+      /deep/.ant-input-number {
+        width: 100%;
+      }
+
+      /deep/.ant-input-number,
+      /deep/.ant-input-number-handler-wrap,
+      /deep/.ant-input-number-handler-down {
+        background-color: #1d1d20;
+        border-color: #57575c;
+        color: #c5c5c5;
+        svg {
+          color: #fff;
+        }
+      }
+
+      /deep/ .ant-slider-handle {
+        border-color: #adb1b3;
+      }
+
+      /deep/ .ant-slider-track {
+        background-color: #ffed4d;
+      }
+    }
+  }
 
   .input {
-    width: 75%;
-    height: 50px;
+    width: 100%;
+    height: 30px;
   }
 
   /deep/ {
     .el-color-picker__trigger {
       width: 100%;
+      height: 30px;
     }
   }
 

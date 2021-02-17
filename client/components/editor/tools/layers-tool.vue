@@ -1,8 +1,6 @@
 <template>
   <div class="layers-tool" :class="{out: show}">
-    <h3 class="title">
-      <i class="iconfont icon-layers"></i> 图层
-    </h3>
+    <p class="title">拖拽图层排序</p>
     <div class="layer-list">
       <div
         class="layer-item"
@@ -13,12 +11,12 @@
         @click="selectLayer(index)"
         @dblclick="renameLayer(index)"
       > 
-        <!-- <div class="icon">
+        <div class="icon">
           <i v-if="layer.type === 'text'" 
             class="iconfont icon-text"></i>
           <i v-if="layer.type === 'image'" 
           class="iconfont icon-image"></i>
-        </div> -->
+        </div>
         <span v-if="renameIndex !== index">{{layer.name}}</span>
         <el-input v-else placeholder="请输入内容" v-model="rename" class="input-with-select">
           <el-button slot="append" icon="el-icon-check" @click="finishRename"></el-button>
@@ -124,35 +122,20 @@ export default {
     transform: translate3d(-100%, 0, 0);
   }
 }
-
 .layers-tool {
-  position: absolute;
-  background-color: #fff;
-  left: -300px;
-  top: 60px;
-  width: 300px;
-  height: calc(100% - 60px);
-  border-right: 1px solid #f1f1f1;
-  box-shadow: none;
-  transition: all 0.5s ease-in-out;
-
-  &.out {
-    left: 80px;
-  }
 
   .title {
-    position: absolute;
     width: 100%;
-    height: 66px;
-    padding: 20px;
+    height: 30px;
+    font-size: 14px;
     color: #636363;
     font-weight: 400;
+    text-align: left;
   }
 
   .layer-list {
-    margin-top: 70px;
-    height: calc(100% - 70px);
     overflow: scroll;
+    border: 1px solid #868686;
 
     .layer-item {
       position: relative;
@@ -160,13 +143,15 @@ export default {
       text-align: center;
       color: #636363;
       line-height: 40px;
+      cursor: pointer;
 
       &.selcted {
-        background-color: #f5f7fa;
+        color: #fff;
+        background-color: #636363;
       }
 
-      &:first-of-type {
-        border-top: 1px dotted #d8d8d8;
+      &:last-of-type {
+        border-bottom: 0px;
       }
 
       .icon {

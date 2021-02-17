@@ -1,77 +1,143 @@
 <template>
-  <div class="text-tool" v-if="layers[currentIndex] && layers[currentIndex].type === 'text'">
-    <el-form>
-      <el-form-item label="文本">
-        <el-input
-          class="input"
-          v-model="value"
-          placeholder="请输入内容"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="字号">
-        <el-input-number
-          class="input"
-          v-model="fontSize"
-          :min="12"
-          label="描述文字"
-        ></el-input-number>
-      </el-form-item>
-      <el-form-item label="对齐">
-        <el-radio-group
-          class="input"
-          v-model="textAlign"
-        >
-          <el-radio-button label="left">
-            <i class="iconfont icon-text-left"></i>
-          </el-radio-button>
-          <el-radio-button label="center">
-            <i class="iconfont icon-text-center"></i>
-          </el-radio-button>
-          <el-radio-button label="right">
-            <i class="iconfont icon-text-right"></i>
-          </el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="颜色">
-        <el-color-picker
-          class="input"
-          v-model="color"
-          :predefine="defaultColor"
-        ></el-color-picker>
-      </el-form-item>
-      <el-form-item label="透明度">
+  <div
+    class="text-tool"
+    v-if="layers[currentIndex] && layers[currentIndex].type === 'text'"
+  >
+    <div class="tool-item">
+      <p class="title">对齐</p>
+      <div class="tool-item-row">
+        <Toolicon
+          type="layer-zdq"
+          text="左对齐"
+          @action="setLayerAlign('left')"
+        />
+        <Toolicon
+          type="layer-spjz"
+          text="水平居中"
+          @action="setLayerAlign('horizCenter')"
+        />
+        <Toolicon
+          type="layer-ydq"
+          text="右对齐"
+          @action="setLayerAlign('right')"
+        />
+        <Toolicon
+          type="layer-sdq"
+          text="顶对齐"
+          @action="setLayerAlign('top')"
+        />
+        <Toolicon
+          type="layer-czjz"
+          text="垂直居中"
+          @action="setLayerAlign('vertiCenter')"
+        />
+        <Toolicon
+          type="layer-xdq"
+          text="底对齐"
+          @action="setLayerAlign('bottom')"
+        />
+      </div>
+    </div>
+    <div class="tool-item">
+      <p class="title">文本</p>
+      <Toolicon
+        type="text-b"
+        text="加粗"
+        :active="fontWeight === 'bold' || fontWeight > 500"
+        @action="setFontWeight"
+      />
+      <Toolicon
+        type="text-i"
+        text="斜体"
+        :active="fontStyle === 'italic'"
+        @action="setFontStyle"
+      />
+      <Toolicon
+        type="text-left"
+        :text="'文本左对齐'"
+        :active="textAlign === 'left'"
+        @action="setTextAlign('left')"
+      />
+      <Toolicon
+        type="text-center"
+        :text="'文本居中'"
+        :active="textAlign === 'center'"
+        @action="setTextAlign('center')"
+      />
+      <Toolicon
+        type="text-right"
+        :text="'文本右对齐'"
+        :active="textAlign === 'right'"
+        @action="setTextAlign('right')"
+      />
+    </div>
+    <div class="tool-item">
+      <p class="title">文本样式</p>
+      <div class="tool-line-item">
+        <span class="title">颜色</span>
         <div class="block">
-          <el-slider
+          <el-color-picker
+            class="input"
+            v-model="color"
+            :predefine="defaultColor"
+          ></el-color-picker>
+        </div>
+      </div>
+      <div class="tool-line-item">
+        <span class="title">字号</span>
+        <div class="block">
+          <a-input-number
+            :value="Math.ceil(fontSize)"
+            :min="12"
+            step="1"
+            @change="(e) => (fontSize = e)"
+          />
+        </div>
+      </div>
+
+      <div class="tool-line-item">
+        <span class="title">透明度</span>
+        <div class="block">
+          <a-slider
+            id="test"
             v-model="opacity"
             :min="0"
             :max="1"
-            :step="0.1"
-          ></el-slider>
+            :step="0.01"
+          />
         </div>
-      </el-form-item>
-      <el-form-item label="字间距">
+      </div>
+      <div class="tool-line-item">
+        <span class="title">字间距</span>
         <div class="block">
-          <el-slider
+          <a-slider
+            id="test"
             v-model="letterSpacing"
             :min="-100"
             :max="100"
             :step="1"
-          ></el-slider>
+          />
         </div>
-      </el-form-item>
-      <el-form-item label="行间距">
+      </div>
+      <div class="tool-line-item">
+        <span class="title">行间距</span>
         <div class="block">
-          <el-slider
+          <a-slider
+            id="test"
             v-model="lineHeight"
             :min="1"
             :max="10"
             :step="0.1"
-          ></el-slider>
+          />
         </div>
-      </el-form-item>
+      </div>
+    </div>
+    <el-form>
       <el-form-item>
         <el-popconfirm title="确定删除这个图层吗？" @onConfirm="deleteLayer">
-          <el-button class="input" type="danger" slot="reference">删除图层</el-button>
+          <a-button class="input" type="danger" slot="reference"
+            >删除图层</a-button
+          >
         </el-popconfirm>
       </el-form-item>
     </el-form>
@@ -80,7 +146,11 @@
 
 <script>
 import { mapState } from "vuex";
+import Toolicon from './Toolicon'
 export default {
+  components: {
+    Toolicon
+  },
   data() {
     return {
       show: false,
@@ -99,9 +169,43 @@ export default {
   },
   computed: {
     ...mapState({
+      templateWidth: state => state.editor.width,
+      templateHeight: state => state.editor.height,
       currentIndex: state => state.editor.currentIndex,
       layers: state => state.editor.layers
     }),
+    top: {
+      get() {
+        return this.layers[this.currentIndex].style.top;
+      },
+      set(value) {
+        this.changeLayer("top", value)
+      }
+    },
+    left: {
+      get() {
+        return this.layers[this.currentIndex].style.left;
+      },
+      set(value) {
+        this.changeLayer("left", value)
+      }
+    },
+    width: {
+      get() {
+        return this.layers[this.currentIndex].style.width;
+      },
+      set(value) {
+        this.changeLayer("width", value)
+      }
+    },
+    height: {
+      get() {
+        return this.layers[this.currentIndex].style.height;
+      },
+      set(value) {
+        this.changeLayer("height", value)
+      }
+    },
     value: {
       get() {
         return this.layers[this.currentIndex].value;
@@ -144,10 +248,24 @@ export default {
     },
     fontWeight: {
       get() {
-        return this.layers[this.currentIndex].style ? this.layers[this.currentIndex].style.fontWeight : 500;
+        return this.layers[this.currentIndex].style 
+        ? this.layers[this.currentIndex].style.fontWeight
+        ? this.layers[this.currentIndex].style.fontWeight : 400 : 400;
       },
       set(value) {
         this.changeLayer("fontWeight", value)
+      }
+    },
+    fontStyle: {
+      get() {
+        return this.layers[this.currentIndex].style 
+        ? this.layers[this.currentIndex].style.fontStyle 
+        ? this.layers[this.currentIndex].style.fontStyle 
+        : 'normal'
+        : 'normal';
+      },
+      set(value) {
+        this.changeLayer("fontStyle", value)
       }
     },
     textAlign: {
@@ -176,6 +294,24 @@ export default {
     }
   },
   methods: {
+    setTextAlign(textAlign) {
+      this.textAlign = textAlign
+    },
+    setFontWeight() {
+      if(this.fontWeight === 'bold' || this.fontWeight > 400) {
+        this.fontWeight = 400
+      } else {
+        this.fontWeight = 900
+      }
+    },
+    setFontStyle() {
+      if(this.fontStyle === 'italic') {
+        this.fontStyle = 'normal'
+      } else {
+        this.fontStyle = 'italic'
+      }
+      console.log(this.fontStyle)
+    },
     changeLayer(attr, value) {
       this.$store.commit("editor/changeLayer", {
         attr,
@@ -185,6 +321,28 @@ export default {
     },
     deleteLayer() {
       this.$store.commit("editor/deleteLayer", this.currentIndex)
+    },
+    setLayerAlign(mode) {
+      switch(mode) {
+        case "left":
+          this.left = 0;
+          break;
+        case "right":
+          this.left = this.templateWidth - this.width
+          break;
+        case "top":
+          this.top = 0
+          break;
+        case "bottom":
+          this.top = this.templateHeight - this.height
+          break;
+        case "horizCenter":
+          this.left = (this.templateWidth - this.width) / 2
+          break;
+        case "vertiCenter":
+          this.top = (this.templateHeight - this.height) / 2
+          break;
+      }
     }
   }
 };
@@ -193,23 +351,64 @@ export default {
 <style lang="scss" scoped>
 @import url(~assets/font/iconfont.css);
 .text-tool {
-  position: absolute;
-  top: 60px;
-  right: 0;
-  height: calc(100% - 60px);
-  padding: 50px 20px;
-  width: 300px;
-  background-color: #fff;
-  text-align: center;
+  padding-top: 20px;
+
+  .tool-item {
+    margin-bottom: 20px;
+    text-align: left;
+
+    & > .title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .tool-line-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+
+      & > .title {
+        font-size: 14px;
+        margin-right: 20px;
+      }
+
+      /deep/.ant-input-number {
+        width: 100%;
+      }
+
+      /deep/.ant-input-number,
+      /deep/.ant-input-number-handler-wrap,
+      /deep/.ant-input-number-handler-down {
+        background-color: #1d1d20;
+        border-color: #57575c;
+        color: #c5c5c5;
+        svg {
+          color: #fff;
+        }
+      }
+
+      /deep/ .ant-slider-handle {
+        border-color: #adb1b3;
+      }
+
+      /deep/ .ant-slider-track {
+        background-color: #ffed4d;
+      }
+    }
+  }
 
   .input {
-    width: 75%;
+    width: 100%;
     height: 40px;
+    height: 30px;
   }
 
   /deep/ {
     .el-color-picker__trigger {
       width: 100%;
+      height: 30px;
     }
   }
 

@@ -2,10 +2,7 @@ import {MessageBox} from 'element-ui'
 export default async({ store, redirect, app }) => {
   try {
     const token = app.$cookies.get("token")
-    if (token) {
-      store.commit("user/SET_TOKEN", token)
-      await store.dispatch("user/getUserInfo")
-    } else {
+    if (!token) {
       MessageBox('请重新登录', '登录超时', {
         confirmButtonText: '确定',
         callback: action => {

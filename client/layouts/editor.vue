@@ -1,17 +1,16 @@
 <template>
   <div class="pc-page">
-    <PubHeader/>
-    <nuxt class="pc-body" />
+    <nuxt />
   </div>
 </template>
 
 <script>
-import PubHeader from '@/components/pub/PubHeader'
+import EditorHeader from '@/components/pub/EditorHeader'
 export default {
-  name: "default",
+  name: "editor",
   middleware: 'userinfo',
   components: {
-    PubHeader
+    EditorHeader
   }
 }
 </script>
@@ -56,11 +55,5 @@ export default {
     @media screen and (min-width: 1460px){
       width: 1440px !important;
     }
-  }
-  
-
-  .pc-body {
-    padding-top: 80px;
-    min-height: 100vh;
   }
 </style>

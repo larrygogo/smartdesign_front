@@ -77,11 +77,25 @@ export default {
   }
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import url('https://fonts.googleapis.com/css2?family=Sigmar+One&display=swap');
   .pc-page {
     min-width: 1100px;
   }
+
+  .container {
+    width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    @media screen and (max-width: 1220px) {
+      width: 960px !important;
+      min-width: 960px !important;
+    }
+    @media screen and (min-width: 1460px){
+      width: 1440px !important;
+    }
+  }
+
   .pc-header {
     box-sizing: border-box;
     position: fixed;

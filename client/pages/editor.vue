@@ -1,36 +1,36 @@
 <template>
-  <div class="editor" @click.self="initTool" v-loading="loading">
-    <template-editor />
-    <layers-tool />
-    <slider />
-    <scale-tool />
-    <template-tool />
-    <text-tool />
-    <image-tool />
+  <div class="page">
+    <EditorHeader />
+    <div class="editor" v-loading="loading">
+      <template-editor />
+      <LayerTool />
+      <Attribute />
+      <slider />
+      <scale-tool />
+    </div>
   </div>
 </template>
 
 <script>
+import EditorHeader from '@/components/pub/EditorHeader'
 import Slider from "../components/editor/slider";
+import Attribute from "../components/editor/Attribute";
 import TemplateEditor from "../components/editor/template-editor";
+import LayerTool from "../components/editor/tools/layer-tool";
 import ScaleTool from "../components/editor/tools/scale-tool";
-import TextTool from "../components/editor/tools/text-tool";
-import ImageTool from "../components/editor/tools/image-tool";
-import TemplateTool from "../components/editor/tools/template-tool";
-import layersTool from "../components/editor/tools/layers-tool";
 export default {
+  layout: 'editor',
   middleware: "verify",
   head: {
-    title: "编辑器"
+    title: "编辑我的设计"
   },
   components: {
+    EditorHeader,
     Slider,
     ScaleTool,
-    TextTool,
-    ImageTool,
-    layersTool,
+    LayerTool,
     TemplateEditor,
-    TemplateTool
+    Attribute
   },
   data() {
     return {
@@ -51,20 +51,24 @@ export default {
       }
   },
   methods: {
-    initTool() {
-      this.$store.commit("editor/setTemplate", { attr: "currentIndex", value: -1})
-    }
+    
   }
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+.page {
+  min-height: 100vh;
+  background-color: #202020;
+
+}
 .editor {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-left: 100px;
-  padding-right: 300px;
+  /* padding-left: 80px;
+  padding-right: 300px; */
+  height: 100vh;
 }
 </style>

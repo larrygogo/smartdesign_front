@@ -9,7 +9,7 @@
         
     }"
   >
-    <div
+    <!-- <div
       class="edit-mask"
       :class=" {edit: index === currentIndex}"
       @mousedown.self="move"
@@ -18,22 +18,22 @@
       <div class="edit-tools" v-if="index === currentIndex" @mousedown.self="move">
         <div
           class="scale-tool tl"
-          :style="{left: `${-20 / scale * 100}px`,top: `${-20 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
+          :style="{left: `${-10 / scale * 100}px`,top: `${-10 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
           @mousedown="zoom('tl')"
         ></div>
         <div
           class="scale-tool tr"
-          :style="{right: `${-20 / scale * 100}px`, top: `${-20 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
+          :style="{right: `${-10 / scale * 100}px`, top: `${-10 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
           @mousedown="zoom('tr')"
         ></div>
         <div
           class="scale-tool bl"
-          :style="{left: `${-20 / scale * 100}px`, bottom: `${-20 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
+          :style="{left: `${-10 / scale * 100}px`, bottom: `${-10 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
           @mousedown="zoom('bl')"
         ></div>
         <div
           class="scale-tool br"
-          :style="{right: `${-20 / scale * 100}px`, bottom: `${-20 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
+          :style="{right: `${-10 / scale * 100}px`, bottom: `${-10 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
           @mousedown="zoom('br')"
         ></div>
         <div
@@ -59,12 +59,12 @@
           @mousedown.self="zoom('bottom')"
         ></div>
       </div>
-    </div>
+    </div> -->
     <div
       class="image-area"
       :style="{opacity: opacity, transform: `matrix(${transform.xx}, ${transform.xy}, ${transform.yx}, ${transform.yy}, ${transform.tx},  ${transform.ty})`}"
     >
-      <img :src="image" />
+      <img :src="host + image" />
     </div>
   </div>
 </template>
@@ -135,25 +135,30 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      host: process.env.ENV_API
+    }
+  },
   computed: mapState({
     currentIndex: state => state.editor.currentIndex
   }),
   methods: {
-    move(e) {
-      document.onmousemove = e => {
-        const left = this.left + (e.movementX / this.scale) * 100;
-        const top = this.top + (e.movementY / this.scale) * 100;
-        this.$store.commit("editor/moveLayer", {
-          top,
-          left,
-          index: this.index
-        });
-      };
-      document.onmouseup = e => {
-        document.onmousemove = null;
-        document.onmouseup = null;
-      };
-    },
+    // move(e) {
+    //   document.onmousemove = e => {
+    //     const left = this.left + (e.movementX / this.scale) * 100;
+    //     const top = this.top + (e.movementY / this.scale) * 100;
+    //     this.$store.commit("editor/moveLayer", {
+    //       top,
+    //       left,
+    //       index: this.index
+    //     });
+    //   };
+    //   document.onmouseup = e => {
+    //     document.onmousemove = null;
+    //     document.onmouseup = null;
+    //   };
+    // },
     openEditTool() {
       this.$store.commit("editor/editLayer", this.index);
     },
@@ -267,21 +272,19 @@ export default {
   .edit-mask {
     position: absolute;
     box-sizing: content-box;
-    padding: 10px;
-    top: -10px;
-    left: -10px;
+    // padding: 10px;
+    // top: -10px;
+    // left: -10px;
     width: 100%;
     height: 100%;
     cursor: move;
     z-index: 10;
 
-    &:hover {
-      border: 2px solid #f5e97c;
-    }
+    
 
-    &.edit {
-      border: 1px dashed #8a8a8a;
-    }
+    // &.edit {
+    //   border: 1px dashed #8a8a8a;
+    // }
 
     .edit-tools {
       position: relative;

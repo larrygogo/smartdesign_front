@@ -1,66 +1,23 @@
 <template>
   <div
+    ref="textLayer"
     class="text-layer"
     :style="{
-        top: `${top}px`,
-        left: `${left}px`,
-        width: `${width}px`,
-        color: color,
-        fontSize: `${fontSize}px`,
-        fontFamily: fontFamily,
-        fontWeight: fontWeight,
-        textAlign: textAlign,
-        lineHeight: lineHeight,
-        letterSpacing: `${letterSpacing}px`
+      top: `${top}px`,
+      left: `${left}px`,
+      width: `${width}px`,
+      color: color,
+      fontSize: `${fontSize}px`,
+      fontFamily: fontFamily,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      textAlign: textAlign,
+      lineHeight: lineHeight,
+      letterSpacing: `${letterSpacing}px`,
     }"
   >
-    <div
-      class="edit-mask"
-      :class=" {edit: index === currentIndex}"
-      @mousedown.self="move"
-      @click="openEditTool"
-    >
-      <div class="edit-tools" v-if="index === currentIndex" @mousedown.self="move">
-        <!-- <div class="scale-tools top" @mousedown.self="move">
-          <div
-            class="scale-tool tl"
-            :style="{marginLeft: `${-10 / scale * 100}px`, marginTop: `${-10 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
-            @mousedown="zoom('tl')"
-          ></div>
-          <div
-            class="scale-tool tr"
-            :style="{marginRight: `${-10 / scale * 100}px`, marginTop: `${-10 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
-            @mousedown="zoom('tr')"
-          ></div>
-        </div>-->
-        <div class="width-tools" @mousedown.self="move">
-          <div
-            class="width-tool left"
-            :style="{marginLeft: `${-5 / scale * 100}px`, width: `${10 / scale * 100}px`, height: `${10 / scale * 100}px`}"
-            @mousedown.self="scaleLeftWidth"
-          ></div>
-          <div
-            class="width-tool right"
-            :style="{marginRight: `${-5 / scale * 100}px`, width: `${10 / scale * 100}px`, height: `${10 / scale * 100}px`}"
-            @mousedown.self="e => scaleWidth('right')"
-          ></div>
-        </div>
-        <!-- <div class="scale-tools bottom" @mousedown.self="move">
-          <div
-            class="scale-tool bl"
-            :style="{marginLeft: `${-10 / scale * 100}px`, marginBottom: `${-10 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
-            @mousedown="zoom('bl')"
-          ></div>
-          <div
-            class="scale-tool br"
-            :style="{marginRight: `${-10 / scale * 100}px`, marginBottom: `${-10 / scale * 100}px`, width: `${20 / scale * 100}px`, height: `${20 / scale * 100}px`}"
-            @mousedown="zoom('br')"
-          ></div>
-        </div>-->
-      </div>
-    </div>
-    <div class="text-area" :style="{opacity: opacity}">
-      <span>{{value}}</span>
+    <div class="text-area" :style="{ opacity: opacity }">
+      <span v-show="editIndex !== index">{{ value }}</span>
     </div>
   </div>
 </template>
@@ -135,6 +92,12 @@ export default {
         return 500;
       }
     },
+    fontStyle: {
+      type: String,
+      default: () => {
+        return "normal";
+      }
+    },
     textAlign: {
       type: String,
       default: () => {
@@ -155,60 +118,53 @@ export default {
     }
   },
   computed: mapState({
+    editIndex:  state => state.editor.editIndex,
     currentIndex: state => state.editor.currentIndex
   }),
+  data () {
+    return {
+      observer: null,
+      firedNum: 0,
+      recordOldValue: { // 记录下旧的宽高数据，避免重复触发回调函数
+        width: '0',
+        height: '0'
+      }
+    }
+  },
+  mounted() {
+    this.listenHeight()
+  },
   methods: {
-    move(e) {
-      document.onmousemove = e => {
-        const left = this.left + (e.movementX / this.scale) * 100;
-        const top = this.top + (e.movementY / this.scale) * 100;
-        this.$store.commit("editor/moveLayer", {
-          top,
-          left,
-          index: this.index
-        });
-      };
-      document.onmouseup = e => {
-        document.onmousemove = null;
-        document.onmouseup = null;
-      };
-    },
-    openEditTool() {
-      this.$store.commit("editor/editLayer", this.index);
-    },
-    scaleWidth(mode) {
-      document.onmousemove = e => {
-        let width = this.width,
-          left = this.left;
-        if (mode === "left") {
-          width -= (e.movementX / this.scale) * 100;
-          left += (e.movementX / this.scale) * 100;
-        } else if (mode === "right") {
-          width += (e.movementX / this.scale) * 100;
+    // 监听文字图层高度变化
+    listenHeight() {
+      let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
+      let element = this.$refs['textLayer']
+      this.observer = new MutationObserver((mutationList) => {
+        // for (let mutation of mutationList) {
+        //   console.log(mutation)
+        // }
+        let width = getComputedStyle(element).getPropertyValue('width')
+        let height = getComputedStyle(element).getPropertyValue('height')
+        if (width === this.recordOldValue.width && height === this.recordOldValue.height) 
+        return this.recordOldValue = {
+          width,
+          height
         }
         this.$store.commit("editor/changeLayer", {
-          attr: "left",
-          value: left,
+          attr: 'height',
+          value: Number(height.replace('px', '')),
           index: this.index
         });
-        this.$store.commit("editor/changeLayer", {
-          attr: "width",
-          value: width,
-          index: this.index
-        });
-      };
-      document.onmouseup = e => {
-        document.onmousemove = null;
-        document.onmouseup = null;
-      };
-    },
-    zoom(mode) {
-      let font = 0;
-      document.onmousemove = e => {};
-      document.onmouseup = e => {
-        document.onmousemove = null;
-        document.onmouseup = null;
-      };
+        this.firedNum += 1
+      })
+      this.observer.observe(element, { attributes: true, attributeFilter: ['style'], attributeOldValue: true })
+    }
+  },
+  beforeDestroyed () {
+    if (this.observer) {
+      this.observer.disconnect()
+      this.observer.takeRecords()
+      this.observer = null
     }
   }
 };
@@ -226,16 +182,16 @@ export default {
   .edit-mask {
     position: absolute;
     box-sizing: content-box;
-    padding: 10px;
-    top: -10px;
-    left: -10px;
+    // padding: 10px;
+    // top: -10px;
+    // left: -10px;
     width: 100%;
     height: 100%;
     cursor: move;
     z-index: 10;
 
     &:hover {
-      border: 2px solid #f5e97c;
+      border: 1px solid #f5e97c;
     }
 
     &.edit {
