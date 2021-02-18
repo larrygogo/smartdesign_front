@@ -110,7 +110,7 @@ export default {
     },
     data() {
       return {
-        host: process.env.ENV_API,
+        host: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST,
         dialogVisible: false,
         bothResource: false
       }

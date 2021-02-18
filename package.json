@@ -5,7 +5,7 @@
   "main": ".nuxt/index.js",
   "scripts": {
     "dev": "nuxt",
-    "build": "cross-env ENV_API=http://api.toolbee.larryzheng.cn nuxt build",
+    "build": "cross-env nuxt build",
     "start": "nuxt start"
   },
   "dependencies": {

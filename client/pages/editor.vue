@@ -20,7 +20,7 @@ import LayerTool from "../components/editor/tools/layer-tool";
 import ScaleTool from "../components/editor/tools/scale-tool";
 export default {
   layout: 'editor',
-  middleware: "verify",
+  middleware: ["auth", "verify"],
   head: {
     title: "编辑我的设计"
   },
@@ -60,7 +60,6 @@ export default {
 .page {
   min-height: 100vh;
   background-color: #202020;
-
 }
 .editor {
   position: relative;

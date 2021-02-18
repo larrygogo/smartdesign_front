@@ -3,7 +3,8 @@ module.exports = {
   srcDir: "client/",
   env: {
     NODE_ENV: process.env.NODE_ENV,
-    ENV_API: process.env.ENV_API
+    DEV_HOST: process.env.DEV_HOST,
+    PRO_HOST: process.env.PRO_HOST
   },
   head: {
     title: "图必ToolBee",
@@ -36,7 +37,7 @@ module.exports = {
     "~/plugins/element-ui",
   ],
   axios: {
-    baseURL: process.env.ENV_API,
+    baseURL: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST,
     credentials: true, // 跨域携带证书
     timeout: 6000
   },
