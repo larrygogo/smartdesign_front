@@ -35,9 +35,9 @@
         <i class="el-icon-warning" style="color: #e6a23c" />
         <span>你确认要删除该模板吗？[ 操作无法撤销 ]</span>
       </p>
-      <el-checkbox v-model="bothResource" class="resource-check"
+      <!-- <el-checkbox v-model="bothResource" class="resource-check"
         >同时删除模板素材文件</el-checkbox
-      >
+      > -->
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="checkDelete">确 定</el-button>

@@ -76,6 +76,7 @@ import { mapState } from "vuex"
 export default {
   computed: {
     ...mapState({
+      templateId: state => state.editor.id,
       layers: state => state.editor.layers,
       token: state => state.user.token,
       userId: state => state.user.userId
@@ -132,17 +133,24 @@ export default {
         attr: 'name',
         value: this.name
       })
-      this.$store.dispatch("editor/saveTemplate").then(res => {
-        if(res.status === 200 && res.data.code === "0") {
-          this.$message.success("模板名称保存成功")
-        }
-      })
+      // this.$store.dispatch("editor/saveTemplate").then(res => {
+      //   if(res.status === 200 && res.data.code === "0") {
+      //     this.$message.success("模板名称保存成功")
+      //   }
+      // })
     },
     saveTemplate() {
       this.saveLoading = true
       this.$store.dispatch("editor/saveTemplate").then(res => {
         if(res.status === 200 && res.data.code === "0") {
-          this.$message.success("模板保存成功")
+          if(this.templateId !== res.data.data.id) {
+            this.$message.success("已保存该模板至我的作品")
+            this.$store.dispatch("editor/getTemplate", res.data.data.id).then(() => {
+              this.$router.replace("/editor?id=" + res.data.data.id)
+            })
+          } else {
+            this.$message.success("模板保存成功")
+          }
         }
       }).finally(() => {
         this.saveLoading = false
