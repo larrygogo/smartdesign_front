@@ -133,11 +133,6 @@ export default {
         attr: 'name',
         value: this.name
       })
-      // this.$store.dispatch("editor/saveTemplate").then(res => {
-      //   if(res.status === 200 && res.data.code === "0") {
-      //     this.$message.success("模板名称保存成功")
-      //   }
-      // })
     },
     saveTemplate() {
       this.saveLoading = true
