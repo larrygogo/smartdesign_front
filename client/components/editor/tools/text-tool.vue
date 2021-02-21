@@ -98,10 +98,10 @@
               background: '#212121'
             }"
           >
-            <a-select-option v-for="font in fontMap" :key="font.id">
+            <a-select-option v-for="font in fontMap" :key="font.fontName">
               <div class="font-select-item">
                 <img class="font-image" :src="font.image" alt="" srcset="" />
-                <span v-if="!font.image">{{ font.id }}</span>
+                <span v-if="!font.image">{{ font.fontName }}</span>
               </div>
             </a-select-option>
           </a-select>
@@ -337,9 +337,10 @@ export default {
       }
     },
     changeFont(e) {
-      this.$store.dispatch("editor/getFontFile", e).then((res) => {
+      const [font] = this.fontMap.filter(item => item.fontName === e)
+      this.$store.dispatch("editor/getFontFile", font.id).then((res) => {
         loadStyle(`${this.host}/fonts/${res.data.data}.css`)
-        this.fontFamily = e
+        this.fontFamily = font.fontName
       })
     },
     setFontStyle() {
