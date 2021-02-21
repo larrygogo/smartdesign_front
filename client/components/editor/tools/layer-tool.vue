@@ -9,6 +9,7 @@
         height: `${height}px`,
         transform: `scale(${scale / 100})`,
       }"
+      @click.self="seleteTemplate"
     >
       <MaskTool
         v-for="(item, index) in layers"
@@ -55,6 +56,12 @@ export default {
       this.$store.commit("editor/setTab", "3")
       this.$store.commit("editor/setTemplate", {
         attr: "editIndex",
+        value: -1
+      });
+    },
+    seleteTemplate() {
+      this.$store.commit("editor/setTemplate", {
+        attr: "currentIndex",
         value: -1
       });
     }

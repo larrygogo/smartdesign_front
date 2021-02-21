@@ -31,8 +31,8 @@
             >我的作品</el-button
           >
           <el-dropdown trigger="click" @command="userAction">
-            <span class="el-dropdown-link">
-              <i class="el-icon-user" />
+            <span class="el-dropdown-link username">
+              <i class="el-icon-user"/>
               {{ userId || "个人中心" }}
               <i class="el-icon-arrow-down el-icon--right" />
             </span>
@@ -134,6 +134,11 @@ computed: mapState({
     line-height: 60px;
     margin-left: 40px;
 
+    .username {
+      cursor: pointer;
+      outline: none;
+    }
+
     a {
       color: #333;
       &:not(:last-of-type) {
@@ -141,7 +146,7 @@ computed: mapState({
       }
     }
     a:hover {
-      color: #0062ff;
+      color: #333;
     }
 
     .header-btn {

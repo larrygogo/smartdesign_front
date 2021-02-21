@@ -83,6 +83,30 @@
           ></el-color-picker>
         </div>
       </div>
+      <div class="tool-line-item" ref="fontFamilyNode">
+        <span class="title">字体</span>
+        <div class="block">
+          <a-select
+            :value="fontFamily"
+            default-value="zh3"
+            class="font-select input"
+            @change="changeFont"
+            :getPopupContainer="() => {
+              return this.$refs['fontFamilyNode']
+            }"
+            :dropdownMenuStyle="{
+              background: '#212121'
+            }"
+          >
+            <a-select-option v-for="font in fontMap" :key="font.id">
+              <div class="font-select-item">
+                <img class="font-image" :src="font.image" alt="" srcset="" />
+                <span v-if="!font.image">{{ font.id }}</span>
+              </div>
+            </a-select-option>
+          </a-select>
+        </div>
+      </div>
       <div class="tool-line-item">
         <span class="title">字号</span>
         <div class="block">
@@ -147,13 +171,21 @@
 <script>
 import { mapState } from "vuex";
 import Toolicon from './Toolicon'
+import fontMap from '~/config/fontMap'
+import {loadStyle} from '~/utils/editor'
 export default {
   components: {
     Toolicon
   },
   data() {
+    this.fontMap = fontMap
     return {
+      host: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST,
       show: false,
+      fontSelectStyle: {
+        height: '50px',
+        padding: '10px'
+      },
       defaultColor: [
         "#000000",
         "#ffffff",
@@ -304,6 +336,12 @@ export default {
         this.fontWeight = 900
       }
     },
+    changeFont(e) {
+      this.$store.dispatch("editor/getFontFile", e).then((res) => {
+        loadStyle(`${this.host}/fonts/${res.data.data}.css`)
+        this.fontFamily = e
+      })
+    },
     setFontStyle() {
       if(this.fontStyle === 'italic') {
         this.fontStyle = 'normal'
@@ -377,7 +415,7 @@ export default {
       /deep/.ant-input-number {
         width: 100%;
       }
-
+      /deep/.ant-select-selection--single,
       /deep/.ant-input-number,
       /deep/.ant-input-number-handler-wrap,
       /deep/.ant-input-number-handler-down {
@@ -401,11 +439,13 @@ export default {
 
   .input {
     width: 100%;
-    height: 40px;
     height: 30px;
   }
 
   /deep/ {
+    .ant-select-selection,
+    
+    .ant-select-selection-selected-value,
     .el-color-picker__trigger {
       width: 100%;
       height: 30px;
@@ -417,6 +457,20 @@ export default {
     width: 75%;
     padding: 0 20px;
     overflow: hidden;
+  }
+
+  .font-image {
+    height: 18px;
+  }
+
+  .font-select-item {
+    height: 30px !important;
+    padding: 0 !important;
+    text-align: center;
+  }
+  /deep/.ant-select-dropdown-menu-item-selected,
+  /deep/.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+    background-color: #000;
   }
 }
 </style>

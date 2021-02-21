@@ -129,6 +129,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import {loadStyle} from '~/utils/editor'
 export default {
   props: {
     height: Number,
@@ -148,6 +149,7 @@ export default {
   },
   data() {
     return {
+      host: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST,
       isEdit: false,
     }
   },
@@ -172,7 +174,12 @@ export default {
       }
     },
     saveEdit() {
-      this.$store.commit("editor/setEditIndex", -1)
+      const fontFamily = this.layers[this.index].style.fontFamily
+      this.$store.dispatch("editor/getFontFile", fontFamily).then((res) => {
+        loadStyle(`${this.host}/fonts/${res.data.data}.css`)
+        this.$store.commit("editor/setEditIndex", -1)
+      })
+      
     },
     changeTextValue(e) {
       this.$store.commit("editor/changeLayer", {

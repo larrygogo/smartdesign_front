@@ -2,6 +2,7 @@
   <div
     ref="textLayer"
     class="text-layer"
+    
     :style="{
       top: `${top}px`,
       left: `${left}px`,
@@ -16,7 +17,7 @@
       letterSpacing: `${letterSpacing}px`,
     }"
   >
-    <div class="text-area" :style="{ opacity: opacity }">
+    <div class="text-area" :class="className" :style="{ opacity: opacity }">
       <span v-show="editIndex !== index">{{ value }}</span>
     </div>
   </div>
@@ -42,6 +43,12 @@ export default {
       type: String,
       default: () => {
         return "默认文本";
+      }
+    },
+    className: {
+      type: String,
+      default: () => {
+        return "";
       }
     },
     top: {

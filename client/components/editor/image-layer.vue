@@ -1,6 +1,7 @@
 <template>
   <div
     class="image-layer"
+    :class="className"
     :style="{
         top: `${top}px`,
         left: `${left}px`,
@@ -86,6 +87,12 @@ export default {
       }
     },
     image: {
+      type: String,
+      default: () => {
+        return "";
+      }
+    },
+    className: {
       type: String,
       default: () => {
         return "";

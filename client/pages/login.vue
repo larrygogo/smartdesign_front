@@ -51,11 +51,11 @@ export default {
       },
       rules: {
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] },
+          { required: true, message: '请输入邮箱', trigger: ['blur', 'change'] },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur'] },
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          { required: true, message: '请输入密码', trigger: 'change' },
           { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur' },
         ]
       }

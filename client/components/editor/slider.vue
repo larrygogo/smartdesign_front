@@ -78,6 +78,7 @@ export default {
         name: "文本" + this.count,
         type: "text",
         value: "双击编辑文字",
+        className: "",
         style: {
           top: 50,
           left: 50,
@@ -99,6 +100,7 @@ export default {
         name: "图像" + this.count,
         type: "image",
         image: src,
+        className: "",
         style: {
           top: 50,
           left: 50,

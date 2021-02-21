@@ -63,7 +63,10 @@ export const mutations = {
     state.width = template.width;
     state.height = template.height;
     state.background = template.background;
-    state.layers = template.layers;
+    state.layers = template.layers.map(item => {
+      item['className'] = ""
+      return item
+    });
     
   },
   changeLayer: (state, { index, attr, value }) => {
@@ -71,6 +74,9 @@ export const mutations = {
       state.layers[index].value = value;
     } else if (attr === "name") {
       state.layers[index].name = value;
+    } else if (attr === "className") {
+      console.log(state.layers[index])
+      state.layers[index].className = value;
     } else {
       state.layers[index].style[attr] = value;
     }
@@ -177,4 +183,9 @@ export const actions = {
       document.body.removeChild(elink);
     });
   },
+  async getFontFile({state, commit}, fontName) {
+    const layer = state.layers[state.currentIndex]
+    const value = layer.value
+    return await this.$axios.get(`/template/fontfile?fontName=${fontName}&text=${value}`)
+  }
 };
