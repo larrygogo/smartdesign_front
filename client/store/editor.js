@@ -15,14 +15,22 @@ export const state = () => ({
   height: 720,
   background: "#ffffff",
   layers: [],
+  saved: true,
+  layerTag: {
+    mainText: "",
+    subText: "",
+    actionText: "",
+    mainImage: "",
+  },
 });
 
 export const mutations = {
   setEditIndex: (state, editIndex) => {
-    state.editIndex = editIndex
+    state.editIndex = editIndex;
+    state.saved = false;
   },
   setTab: (state, tab) => {
-    state.tab = tab
+    state.tab = tab;
   },
   initTemplate: (state) => {
     // 编辑器状态
@@ -36,14 +44,14 @@ export const mutations = {
     };
 
     // 模板信息
-    state.id = null
-    state.src = ""
-    state.name = "未命名作品"
+    state.id = null;
+    state.src = "";
+    state.name = "未命名作品";
     state.width = 1280;
     state.height = 720;
     state.background = "#ffffff";
     state.layers = [];
-    
+    state.saved = true;
   },
   loadTemplate: (state, template) => {
     // 编辑器状态
@@ -57,44 +65,60 @@ export const mutations = {
     };
 
     // 模板信息
-    state.id = template._id || null
-    state.src = template.src
+    state.id = template._id || null;
+    state.src = template.src;
     state.name = template.name;
     state.width = template.width;
     state.height = template.height;
     state.background = template.background;
-    state.layers = template.layers.map(item => {
-      item['className'] = ""
-      return item
+    state.layers = template.layers.map((item) => {
+      item["className"] = "";
+      return item;
     });
-    
+    state.saved = true;
   },
   changeLayer: (state, { index, attr, value }) => {
+    state.saved = false;
     if (attr === "value") {
       state.layers[index].value = value;
     } else if (attr === "name") {
       state.layers[index].name = value;
     } else if (attr === "className") {
-      console.log(state.layers[index])
+      console.log(state.layers[index]);
       state.layers[index].className = value;
     } else {
       state.layers[index].style[attr] = value;
     }
   },
   addLayer: (state, layer) => {
+    state.saved = false;
     state.layers.push(layer);
     state.currentIndex = state.layers.length - 1;
     state.count++;
   },
   deleteLayer: (state, index) => {
+    state.saved = false;
+    const newLayerTag = { ...state.layerTag };
+    console.log(state.layers[index]._id);
+    if (state.layers[index]._id) {
+      for (let item in state.layerTag) {
+        console.log(state.layerTag[item]);
+        if (state.layers[index]._id === state.layerTag[item]) {
+          newLayerTag[item] = "";
+        }
+      }
+      state.layerTag = newLayerTag;
+    }
     state.currentIndex = -1;
     state.layers.splice(index, 1);
   },
   moveLayer: (state, { top, left, index }) => {
+    state.saved = false;
     state.layers[index].style.top = top;
     state.layers[index].style.left = left;
   },
   changeLayerSize: (state, { width, height, index }) => {
+    state.saved = false;
     if (state.layers[index].type === "text") {
       state.layers[index].style.width = width;
     } else {
@@ -103,10 +127,15 @@ export const mutations = {
     }
   },
   editLayer: (state, index) => {
-    state.tab = "1"
+    state.tab = "1";
     state.currentIndex = index;
   },
   setTemplate: (state, { attr, value }) => {
+    if (attr !== "saved") {
+      state.saved = false;
+    } else {
+      state.saved = value;
+    }
     if (attr === "name") {
       state.name = value;
     } else if (attr === "src") {
@@ -131,19 +160,47 @@ export const mutations = {
       state.layers = value;
     }
   },
+  setLayerTag(state, layerTag) {
+    state.layerTag = layerTag;
+  },
+  setLayerTagItem(state, attr, value) {
+    if (attr === "mainText") {
+      state.layerTag.mainText = value;
+    } else if (attr === "subText") {
+      state.layerTag.subText = value;
+    } else if (attr === "actionText") {
+      state.layerTag.actionText = value;
+    } else if (attr === "mainImage") {
+      state.layerTag.mainImage = value;
+    }
+  },
 };
 
 export const actions = {
   async getTemplate({ commit }, id) {
-    const res = await this.$axios.get("/template/info?id=" + id);
-    if (res.status === 200 && res.data.code === "0") {
-      commit("loadTemplate", res.data.data);
+    const res = await Promise.all([
+      await this.$axios.get("/template/info?id=" + id),
+      await this.$axios.get("/template/layerTag?id=" + id),
+    ]);
+    if (res[0].status === 200 && res[0].data.code === "0") {
+      commit("loadTemplate", res[0].data.data);
     } else {
       commit("initTemplate");
     }
-    return res
+    if (res[1].status === 200 && res[1].data.code === "0") {
+      const { mainText, subText, actionText, mainImage } = res[1].data.data;
+      commit("setLayerTag", { mainText, subText, actionText, mainImage });
+    } else {
+      commit("setLayerTag", {
+        mainText: "",
+        subText: "",
+        actionText: "",
+        mainImage: "",
+      });
+    }
+    return res;
   },
-  async saveTemplate({state, commit}) {
+  async saveTemplate({ state, commit }) {
     const template = {
       id: state.id,
       src: state.src,
@@ -151,10 +208,11 @@ export const actions = {
       width: state.width,
       height: state.height,
       background: state.background,
-      layers: state.layers
-    }
+      layers: state.layers,
+    };
     const res = await this.$axios.post("/template/save", template);
-    return res
+    commit("setTemplate", { attr: "saved", value: true });
+    return res;
     // if (res.status === 200 && res.data.code === "0") {
     //   commit("loadTemplate", res.data.data);
     // } else {
@@ -168,24 +226,36 @@ export const actions = {
       background: state.background,
       layers: state.layers,
     };
-    return await this.$axios.post("/template/render", { template }, { responseType: "arraybuffer" })
-    .then((file) => {
-      let content = file.data;
-      // 组装a标签
-      let elink = document.createElement("a");
-      // 设置下载文件名
-      elink.download = filename + ".png";
-      elink.style.display = "none";
-      let blob = new Blob([content], {type: "application/zip"})
-      elink.href = URL.createObjectURL(blob);
-      document.body.appendChild(elink);
-      elink.click();
-      document.body.removeChild(elink);
+    return await this.$axios
+      .post("/template/render", { template }, { responseType: "arraybuffer" })
+      .then((file) => {
+        let content = file.data;
+        // 组装a标签
+        let elink = document.createElement("a");
+        // 设置下载文件名
+        elink.download = filename + ".png";
+        elink.style.display = "none";
+        let blob = new Blob([content], { type: "application/zip" });
+        elink.href = URL.createObjectURL(blob);
+        document.body.appendChild(elink);
+        elink.click();
+        document.body.removeChild(elink);
+      });
+  },
+  async getFontFile({ state, commit }, fontName) {
+    const layer = state.layers[state.currentIndex];
+    const value = layer.value;
+    return await this.$axios.get(
+      `/template/fontfile?fontName=${fontName}&text=${value}`
+    );
+  },
+  setLayerTag({ commit, state }) {
+    return this.$axios.post("/template/layerTag", {
+      id: state.id,
+      mainText: state.layerTag.mainText,
+      subText: state.layerTag.subText,
+      actionText: state.layerTag.actionText,
+      mainImage: state.layerTag.mainImage,
     });
   },
-  async getFontFile({state, commit}, fontName) {
-    const layer = state.layers[state.currentIndex]
-    const value = layer.value
-    return await this.$axios.get(`/template/fontfile?fontName=${fontName}&text=${value}`)
-  }
 };

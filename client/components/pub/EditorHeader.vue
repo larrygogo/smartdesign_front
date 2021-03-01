@@ -72,21 +72,21 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState } from "vuex";
 export default {
   computed: {
     ...mapState({
-      templateId: state => state.editor.id,
-      layers: state => state.editor.layers,
-      token: state => state.user.token,
-      userId: state => state.user.userId
+      templateId: (state) => state.editor.id,
+      layers: (state) => state.editor.layers,
+      token: (state) => state.user.token,
+      userId: (state) => state.user.userId,
     }),
     header: {
       get() {
         return {
-          Authorization: `Bearer ${this.$store.state.user.token}`
+          Authorization: `Bearer ${this.$store.state.user.token}`,
         };
-      }
+      },
     },
   },
   data() {
@@ -95,16 +95,19 @@ export default {
       loading: false,
       saveLoading: false,
       fileList: [],
-      host: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST
-    }
+      host:
+        process.env.NODE_ENV === "development"
+          ? process.env.DEV_HOST
+          : process.env.PRO_HOST,
+    };
   },
   mounted() {
-    this.name = this.$store.state.editor.name
+    this.name = this.$store.state.editor.name;
   },
   watch: {
-    '$store.state.editor.name': function(val) {
-      this.name = val
-    }
+    "$store.state.editor.name": function(val) {
+      this.name = val;
+    },
   },
   methods: {
     userAction(command) {
@@ -112,84 +115,94 @@ export default {
         this.$confirm("是否退出登录？", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         })
           .then(() => {
             this.$store.dispatch("user/logout").then(() => {
               this.$cookies.remove("token", {
-                path: "/"
-              })
-              this.$router.replace("/login")
-            })
+                path: "/",
+              });
+              this.$router.replace("/login");
+            });
           })
-          .catch(() => {})
+          .catch(() => {});
       }
     },
     editNameHandle() {
-      this.editName = true
+      this.editName = true;
     },
     saveName() {
       this.$store.commit("editor/setTemplate", {
-        attr: 'name',
-        value: this.name
-      })
+        attr: "name",
+        value: this.name,
+      });
     },
     saveTemplate() {
-      this.saveLoading = true
-      this.$store.dispatch("editor/saveTemplate").then(res => {
-        if(res.status === 200 && res.data.code === "0") {
-          if(this.templateId !== res.data.data.id) {
-            this.$message.success("已保存该模板至我的作品")
-            this.$store.dispatch("editor/getTemplate", res.data.data.id).then(() => {
-              this.$router.replace("/editor?id=" + res.data.data.id)
-            })
-          } else {
-            this.$message.success("模板保存成功")
+      this.saveLoading = true;
+      this.$store
+        .dispatch("editor/saveTemplate")
+        .then((res) => {
+          if (res.status === 200 && res.data.code === "0") {
+            this.$store.dispatch("editor/setLayerTag").then(() => {
+              this.$store
+                .dispatch("editor/getTemplate", res.data.data.id)
+                .then(() => {
+                  this.$router.replace("/editor?id=" + res.data.data.id);
+                  if (this.templateId !== res.data.data.id) {
+                    this.$message.success("已保存该模板至我的作品");
+                  } else {
+                    this.$message.success("模板保存成功");
+                  }
+                });
+            });
           }
-        }
-      }).finally(() => {
-        this.saveLoading = false
-      })
+        })
+        .finally(() => {
+          this.saveLoading = false;
+        });
     },
     renderTemplate() {
-      this.render()
+      this.render();
     },
     render() {
-      this.loading = true
-      this.$store.dispatch("editor/render", this.name).then(res => {
-        if(res.status === 200 && res.data.code === "0") {
-          this.showRender = true
-          this.renderImg = res.data.data
-        } else {
-          this.$message.error("图片渲染失败")
-        }
-      }).finally(() => {
-        this.loading = false
-      })
+      this.loading = true;
+      this.$store
+        .dispatch("editor/render", this.name)
+        .then((res) => {
+          if (res.status === 200 && res.data.code === "0") {
+            this.showRender = true;
+            this.renderImg = res.data.data;
+          } else {
+            this.$message.error("图片渲染失败");
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     successUpload(e) {
       if (e.code === "0") {
-        this.$store.commit("editor/loadTemplate", e.data)
+        this.$store.commit("editor/loadTemplate", e.data);
       } else {
         this.$message.error("上传错误");
       }
-      this.fileList = []
+      this.fileList = [];
     },
     errorUpload(e) {
       if (e.status === 401) {
         this.$alert("请重新登录", "登录超时", {
           confirmButtonText: "确定",
-          callback: action => {
+          callback: (action) => {
             this.$router.replace("/login");
-          }
+          },
         });
       } else {
         this.$message.error("上传错误");
       }
-      this.fileList = []
+      this.fileList = [];
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
