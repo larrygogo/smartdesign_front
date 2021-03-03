@@ -136,7 +136,9 @@ export const mutations = {
     } else {
       state.saved = value;
     }
-    if (attr === "name") {
+    if (attr === "id") {
+      state.id = value;
+    } else if (attr === "name") {
       state.name = value;
     } else if (attr === "src") {
       state.src = value;
@@ -212,6 +214,7 @@ export const actions = {
     };
     const res = await this.$axios.post("/template/save", template);
     commit("setTemplate", { attr: "saved", value: true });
+    commit("setTemplate", { attr: "id", value: res.data.data.id });
     return res;
     // if (res.status === 200 && res.data.code === "0") {
     //   commit("loadTemplate", res.data.data);

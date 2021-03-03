@@ -180,19 +180,22 @@ export default {
       const { mainText, subText, actionText, mainImage } = this.layerTagForm;
       console.log(mainText, subText, actionText, mainImage);
       if (!mainText) {
-        callback(new Error("请选择主文案"));
+        callback();
       } else if (
         mainText === subText ||
         mainText === actionText ||
         mainText === mainImage
       ) {
+        console.log(mainText);
         callback(new Error("不能与其他标签选择同一图层"));
       }
       callback();
     };
     const checkSubText = (rule, value, callback) => {
       const { mainText, subText, actionText, mainImage } = this.layerTagForm;
-      if (
+      if (!subText) {
+        callback();
+      } else if (
         subText === mainText ||
         subText === actionText ||
         subText === mainImage
@@ -203,8 +206,10 @@ export default {
     };
     const checkActionText = (rule, value, callback) => {
       const { mainText, subText, actionText, mainImage } = this.layerTagForm;
-      if (
-        actionText === mainText ||
+      if (!actionText) {
+        callback();
+      } else if (
+        (!!actionText && actionText === mainText) ||
         actionText === subText ||
         actionText === mainImage
       ) {
@@ -214,8 +219,10 @@ export default {
     };
     const checkMainImage = (rule, value, callback) => {
       const { mainText, subText, actionText, mainImage } = this.layerTagForm;
-      if (
-        mainImage === mainText ||
+      if (!mainImage) {
+        callback();
+      } else if (
+        (!!mainImage && mainImage === mainText) ||
         mainImage === subText ||
         mainImage === actionText
       ) {
