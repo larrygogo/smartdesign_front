@@ -8,7 +8,7 @@
       </n-link>
       <ul class="nav">
         <n-link to="/"> 模板中心 </n-link>
-        <n-link to="/setting"></n-link>
+        <n-link to="/auto"> 一键生成 </n-link>
       </ul>
       <ul class="user">
         <template v-if="!token">
@@ -32,7 +32,7 @@
           >
           <el-dropdown trigger="click" @command="userAction">
             <span class="el-dropdown-link username">
-              <i class="el-icon-user"/>
+              <i class="el-icon-user" />
               {{ userId || "个人中心" }}
               <i class="el-icon-arrow-down el-icon--right" />
             </span>
@@ -47,11 +47,11 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState } from "vuex";
 export default {
-computed: mapState({
-    token: state => state.user.token,
-    userId: state => state.user.userId
+  computed: mapState({
+    token: (state) => state.user.token,
+    userId: (state) => state.user.userId,
   }),
   methods: {
     userAction(command) {
@@ -59,21 +59,21 @@ computed: mapState({
         this.$confirm("是否退出登录？", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         })
           .then(() => {
             this.$store.dispatch("user/logout").then(() => {
               this.$cookies.remove("token", {
-                path: "/"
-              })
-              this.$router.replace("/login")
-            })
+                path: "/",
+              });
+              this.$router.replace("/login");
+            });
           })
-          .catch(() => {})
+          .catch(() => {});
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
