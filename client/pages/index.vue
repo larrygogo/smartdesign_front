@@ -24,28 +24,28 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import TempUploadDialog from '@/components/upload/TempUploadDialog'
-import TempList from '@/components/pub/template/TempList'
+import { mapState } from "vuex";
+import TempUploadDialog from "@/components/upload/TempUploadDialog";
+import TempList from "@/components/pub/template/TempList";
 export default {
   components: {
     TempList,
-    TempUploadDialog
+    TempUploadDialog,
   },
   computed: {
     ...mapState({
-      isAdmin: state => state.user.isAdmin,
-      count: state => state.template.count,
-      templates: state => state.template.list,
+      isAdmin: (state) => state.user.isAdmin,
+      count: (state) => state.template.count,
+      templates: (state) => state.template.list,
     }),
   },
   mounted() {
-    this.getList()
+    this.getList();
   },
   data() {
     return {
       page: 1,
-      pageSize: 10,
+      pageSize: 12,
       loading: false,
       uploadDialog: false,
       activeNav: 1,
@@ -53,28 +53,29 @@ export default {
   },
   methods: {
     selectNav(nav) {
-      this.activeNav = nav  
+      this.activeNav = nav;
     },
     openUploadDialog() {
-      this.uploadDialog = true
+      this.uploadDialog = true;
     },
     closeUploadDialog() {
-      this.uploadDialog = false
+      this.uploadDialog = false;
     },
     getList(page, pageSize) {
-      if(!page) {
-        page = this.page
+      if (!page) {
+        page = this.page;
       }
-      if(!pageSize) {
-        pageSize = this.pageSize
+      if (!pageSize) {
+        pageSize = this.pageSize;
       }
-      this.loading = true
-      this.$store.dispatch("template/getList", { page, pageSize }).finally(() => {
-        this.loading = false
-      })
-      
+      this.loading = true;
+      this.$store
+        .dispatch("template/getList", { page, pageSize })
+        .finally(() => {
+          this.loading = false;
+        });
     },
-  }
+  },
 };
 </script>
 
