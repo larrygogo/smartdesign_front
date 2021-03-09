@@ -128,9 +128,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import {loadStyle} from '~/utils/editor'
-import fontMap from '~/config/fontMap'
+import { mapState } from "vuex";
+import { loadStyle } from "~/utils/editor";
+import fontMap from "~/config/fontMap";
 export default {
   props: {
     height: Number,
@@ -146,80 +146,87 @@ export default {
     letterSpacing: Number,
     index: Number,
     value: String,
-    layerType: String
+    layerType: String,
   },
   data() {
-    this.fontMap = fontMap
+    this.fontMap = fontMap;
     return {
-      host: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST,
+      host:
+        process.env.NODE_ENV === "development"
+          ? process.env.DEV_HOST
+          : process.env.PRO_HOST,
       isEdit: false,
-    }
+    };
   },
   computed: {
     ...mapState({
-      editIndex: state => state.editor.editIndex,
-      currentIndex: state => state.editor.currentIndex,
-      layers: state => state.editor.layers
+      editIndex: (state) => state.editor.editIndex,
+      currentIndex: (state) => state.editor.currentIndex,
+      layers: (state) => state.editor.layers,
     }),
     textHeight: () => {
-      if(lineHeight) {
-
+      if (lineHeight) {
       }
-    }
+    },
   },
   methods: {
     editText() {
-      if(this.layers[this.currentIndex].type === 'text') {
-        this.$store.commit("editor/setEditIndex", this.index)
-        this.$refs['textarea'].focus()
-        this.$refs['textarea'].select()
+      if (this.layers[this.currentIndex].type === "text") {
+        this.$store.commit("editor/setEditIndex", this.index);
+        this.$refs["textarea"].focus();
+        this.$refs["textarea"].select();
       }
     },
     saveEdit() {
-      const fontFamily = this.layers[this.index].style.fontFamily
-      const [font] = this.fontMap.filter(item => item.fontName === fontFamily)
-      this.$store.dispatch("editor/getFontFile", font.id).then((res) => {
-        loadStyle(`${this.host}/fonts/${res.data.data}.css`)
-        this.$store.commit("editor/setEditIndex", -1)
-      })
-      
+      const fontFamily = this.layers[this.index].style.fontFamily;
+      const [font] = this.fontMap.filter(
+        (item) => item.fontName === fontFamily
+      );
+      this.$store
+        .dispatch("editor/getFontFile", {
+          fontName: font.id,
+          index: this.index,
+        })
+        .then((res) => {
+          loadStyle(`${this.host}/fonts/${res.data.data}.css`);
+          this.$store.commit("editor/setEditIndex", -1);
+        });
     },
     changeTextValue(e) {
       this.$store.commit("editor/changeLayer", {
         attr: "value",
         value: e.target.value,
-        index: this.index
+        index: this.index,
       });
     },
     getHeight() {
-      if(this.layerType === 'text') {
-        return this.lineHeight * this.height
-      } else if(this.layerType === 'image') {
-        return this.height
+      if (this.layerType === "text") {
+        return this.lineHeight * this.height;
+      } else if (this.layerType === "image") {
+        return this.height;
       }
     },
     move() {
-      if(this.editIndex !== this.index) {
-        document.onmousemove = e => {
+      if (this.editIndex !== this.index) {
+        document.onmousemove = (e) => {
           const left = this.left + (e.movementX / this.scale) * 100;
           const top = this.top + (e.movementY / this.scale) * 100;
           this.$store.commit("editor/moveLayer", {
             top,
             left,
-            index: this.index
+            index: this.index,
           });
         };
-        document.onmouseup = e => {
+        document.onmouseup = (e) => {
           document.onmousemove = null;
           document.onmouseup = null;
         };
       }
-      
     },
     zoom(mode) {
-      const layerType = this.layerType
-      const scale = this.width / this.height
-      document.onmousemove = e => {
+      const layerType = this.layerType;
+      const scale = this.width / this.height;
+      document.onmousemove = (e) => {
         let maxMove = Math.max(Math.abs(e.movementX), Math.abs(e.movementY));
         let fontMove = e.movementY;
         const type =
@@ -251,16 +258,26 @@ export default {
             left -= (maxMove / this.scale) * 100;
             height += (maxMove / scale / this.scale) * 100;
             top -= (maxMove / scale / this.scale) * 100;
-            if(layerType === 'text') {
-              fontSize = Number(String(fontSize + (maxMove / this.scale / scale) * 100).replace(/^(.*\..{5}).*$/,"$1"))
+            if (layerType === "text") {
+              fontSize = Number(
+                String(fontSize + (maxMove / this.scale / scale) * 100).replace(
+                  /^(.*\..{5}).*$/,
+                  "$1"
+                )
+              );
             }
           } else if (type === "br" && width > 5 && height > 5) {
             width += (-maxMove / this.scale) * 100;
             left -= (-maxMove / this.scale) * 100;
             height += (-maxMove / scale / this.scale) * 100;
             top -= (-maxMove / scale / this.scale) * 100;
-            if(layerType === 'text') {
-              fontSize = Number(String(fontSize - (maxMove / this.scale / scale) * 100).replace(/^(.*\..{5}).*$/,"$1"))
+            if (layerType === "text") {
+              fontSize = Number(
+                String(fontSize - (maxMove / this.scale / scale) * 100).replace(
+                  /^(.*\..{5}).*$/,
+                  "$1"
+                )
+              );
             }
           }
         } else if (mode === "tr") {
@@ -268,15 +285,25 @@ export default {
             width += (maxMove / this.scale) * 100;
             height += (maxMove / scale / this.scale) * 100;
             top -= (maxMove / scale / this.scale) * 100;
-            if(layerType === 'text') {
-              fontSize = Number(String(fontSize + (maxMove / this.scale / scale) * 100).replace(/^(.*\..{5}).*$/,"$1"))
+            if (layerType === "text") {
+              fontSize = Number(
+                String(fontSize + (maxMove / this.scale / scale) * 100).replace(
+                  /^(.*\..{5}).*$/,
+                  "$1"
+                )
+              );
             }
           } else if (type === "bl" && width > 5 && height > 5) {
             width += (-maxMove / this.scale) * 100;
             height += (-maxMove / scale / this.scale) * 100;
             top -= (-maxMove / scale / this.scale) * 100;
-            if(layerType === 'text') {
-              fontSize = Number(String(fontSize - (maxMove / this.scale / scale) * 100).replace(/^(.*\..{5}).*$/,"$1"))
+            if (layerType === "text") {
+              fontSize = Number(
+                String(fontSize - (maxMove / this.scale / scale) * 100).replace(
+                  /^(.*\..{5}).*$/,
+                  "$1"
+                )
+              );
             }
           }
         } else if (mode === "bl") {
@@ -284,68 +311,87 @@ export default {
             width += (maxMove / this.scale) * 100;
             left -= (maxMove / this.scale) * 100;
             height += (maxMove / scale / this.scale) * 100;
-            if(layerType === 'text') {
-              fontSize = Number(String(fontSize - (maxMove / this.scale / scale) * 100).replace(/^(.*\..{5}).*$/,"$1"))
+            if (layerType === "text") {
+              fontSize = Number(
+                String(fontSize - (maxMove / this.scale / scale) * 100).replace(
+                  /^(.*\..{5}).*$/,
+                  "$1"
+                )
+              );
             }
           } else if (type === "tr" && width > 5 && height > 5) {
             width += (-maxMove / this.scale) * 100;
             left -= (-maxMove / this.scale) * 100;
             height += (-maxMove / scale / this.scale) * 100;
-            if(layerType === 'text') {
-              fontSize = Number(String(fontSize + (maxMove / this.scale / scale) * 100).replace(/^(.*\..{5}).*$/,"$1"))
+            if (layerType === "text") {
+              fontSize = Number(
+                String(fontSize + (maxMove / this.scale / scale) * 100).replace(
+                  /^(.*\..{5}).*$/,
+                  "$1"
+                )
+              );
             }
           }
-          
         } else if (mode === "br") {
           if (type === "br") {
             width += (maxMove / this.scale) * 100;
             height += (maxMove / scale / this.scale) * 100;
-            if(layerType === 'text') {
-              fontSize = Number(String(fontSize + (maxMove / this.scale / scale) * 100).replace(/^(.*\..{5}).*$/,"$1"))
+            if (layerType === "text") {
+              fontSize = Number(
+                String(fontSize + (maxMove / this.scale / scale) * 100).replace(
+                  /^(.*\..{5}).*$/,
+                  "$1"
+                )
+              );
             }
           } else if (type === "tl" && width > 5 && height > 5) {
             width += (-maxMove / this.scale) * 100;
             height += (-maxMove / scale / this.scale) * 100;
-            if(layerType === 'text') {
-              fontSize = Number(String(fontSize - (maxMove / this.scale / scale) * 100).replace(/^(.*\..{5}).*$/,"$1"))
+            if (layerType === "text") {
+              fontSize = Number(
+                String(fontSize - (maxMove / this.scale / scale) * 100).replace(
+                  /^(.*\..{5}).*$/,
+                  "$1"
+                )
+              );
             }
           }
         }
         this.$store.commit("editor/changeLayer", {
           attr: "top",
           value: top,
-          index: this.index
+          index: this.index,
         });
         this.$store.commit("editor/changeLayer", {
           attr: "left",
           value: left,
-          index: this.index
+          index: this.index,
         });
         this.$store.commit("editor/changeLayer", {
           attr: "width",
           value: width,
-          index: this.index
+          index: this.index,
         });
         this.$store.commit("editor/changeLayer", {
           attr: "height",
           value: height,
-          index: this.index
+          index: this.index,
         });
-        if(layerType === 'text') {
+        if (layerType === "text") {
           this.$store.commit("editor/changeLayer", {
             attr: "fontSize",
             value: fontSize,
-            index: this.index
+            index: this.index,
           });
         }
       };
-      document.onmouseup = e => {
+      document.onmouseup = (e) => {
         document.onmousemove = null;
         document.onmouseup = null;
       };
     },
     scaleWidth(mode) {
-      document.onmousemove = e => {
+      document.onmousemove = (e) => {
         let width = this.width,
           left = this.left;
         if (mode === "left") {
@@ -357,15 +403,15 @@ export default {
         this.$store.commit("editor/changeLayer", {
           attr: "left",
           value: left,
-          index: this.index
+          index: this.index,
         });
         this.$store.commit("editor/changeLayer", {
           attr: "width",
           value: width,
-          index: this.index
+          index: this.index,
         });
       };
-      document.onmouseup = e => {
+      document.onmouseup = (e) => {
         document.onmousemove = null;
         document.onmouseup = null;
       };
@@ -373,8 +419,8 @@ export default {
     openEditTool() {
       this.$store.commit("editor/editLayer", this.index);
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss">
