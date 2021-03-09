@@ -245,8 +245,8 @@ export const actions = {
         document.body.removeChild(elink);
       });
   },
-  async getFontFile({ state, commit }, fontName) {
-    const layer = state.layers[state.currentIndex];
+  async getFontFile({ state, commit }, { fontName, index }) {
+    const layer = state.layers[index];
     const value = layer.value;
     return await this.$axios.get(
       `/template/fontfile?fontName=${fontName}&text=${value}`

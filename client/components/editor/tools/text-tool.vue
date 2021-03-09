@@ -91,11 +91,13 @@
             default-value="zh3"
             class="font-select input"
             @change="changeFont"
-            :getPopupContainer="() => {
-              return this.$refs['fontFamilyNode']
-            }"
+            :getPopupContainer="
+              () => {
+                return this.$refs['fontFamilyNode'];
+              }
+            "
             :dropdownMenuStyle="{
-              background: '#212121'
+              background: '#212121',
             }"
           >
             <a-select-option v-for="font in fontMap" :key="font.fontName">
@@ -170,21 +172,24 @@
 
 <script>
 import { mapState } from "vuex";
-import Toolicon from './Toolicon'
-import fontMap from '~/config/fontMap'
-import {loadStyle} from '~/utils/editor'
+import Toolicon from "./Toolicon";
+import fontMap from "~/config/fontMap";
+import { loadStyle } from "~/utils/editor";
 export default {
   components: {
-    Toolicon
+    Toolicon,
   },
   data() {
-    this.fontMap = fontMap
+    this.fontMap = fontMap;
     return {
-      host: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST,
+      host:
+        process.env.NODE_ENV === "development"
+          ? process.env.DEV_HOST
+          : process.env.PRO_HOST,
       show: false,
       fontSelectStyle: {
-        height: '50px',
-        padding: '10px'
+        height: "50px",
+        padding: "10px",
       },
       defaultColor: [
         "#000000",
@@ -195,195 +200,216 @@ export default {
         "#90ee90",
         "#00ced1",
         "#1e90ff",
-        "#c71585"
-      ]
+        "#c71585",
+      ],
     };
   },
   computed: {
     ...mapState({
-      templateWidth: state => state.editor.width,
-      templateHeight: state => state.editor.height,
-      currentIndex: state => state.editor.currentIndex,
-      layers: state => state.editor.layers
+      templateWidth: (state) => state.editor.width,
+      templateHeight: (state) => state.editor.height,
+      currentIndex: (state) => state.editor.currentIndex,
+      layers: (state) => state.editor.layers,
     }),
     top: {
       get() {
         return this.layers[this.currentIndex].style.top;
       },
       set(value) {
-        this.changeLayer("top", value)
-      }
+        this.changeLayer("top", value);
+      },
     },
     left: {
       get() {
         return this.layers[this.currentIndex].style.left;
       },
       set(value) {
-        this.changeLayer("left", value)
-      }
+        this.changeLayer("left", value);
+      },
     },
     width: {
       get() {
         return this.layers[this.currentIndex].style.width;
       },
       set(value) {
-        this.changeLayer("width", value)
-      }
+        this.changeLayer("width", value);
+      },
     },
     height: {
       get() {
         return this.layers[this.currentIndex].style.height;
       },
       set(value) {
-        this.changeLayer("height", value)
-      }
+        this.changeLayer("height", value);
+      },
     },
     value: {
       get() {
         return this.layers[this.currentIndex].value;
       },
       set(value) {
-        this.changeLayer("value", value)
-      }
+        this.changeLayer("value", value);
+      },
     },
     color: {
       get() {
-        return this.layers[this.currentIndex].style ? this.layers[this.currentIndex].style.color : "#000000";
+        return this.layers[this.currentIndex].style
+          ? this.layers[this.currentIndex].style.color
+          : "#000000";
       },
       set(value) {
-        this.changeLayer("color", value)
-      }
+        this.changeLayer("color", value);
+      },
     },
     opacity: {
       get() {
-        return this.layers[this.currentIndex].style ? this.layers[this.currentIndex].style.opacity : 1;
+        return this.layers[this.currentIndex].style
+          ? this.layers[this.currentIndex].style.opacity
+          : 1;
       },
       set(value) {
-        this.changeLayer("opacity", value)
-      }
+        this.changeLayer("opacity", value);
+      },
     },
     fontSize: {
       get() {
-        return this.layers[this.currentIndex].style ? this.layers[this.currentIndex].style.fontSize : 24;
+        return this.layers[this.currentIndex].style
+          ? this.layers[this.currentIndex].style.fontSize
+          : 24;
       },
       set(value) {
-        this.changeLayer("fontSize", value)
-      }
+        this.changeLayer("fontSize", value);
+      },
     },
     fontFamily: {
       get() {
-        return this.layers[this.currentIndex].style ? this.layers[this.currentIndex].style.fontFamily : "";
+        return this.layers[this.currentIndex].style
+          ? this.layers[this.currentIndex].style.fontFamily
+          : "";
       },
       set(value) {
-        this.changeLayer("fontFamily", value)
-      }
+        this.changeLayer("fontFamily", value);
+      },
     },
     fontWeight: {
       get() {
-        return this.layers[this.currentIndex].style 
-        ? this.layers[this.currentIndex].style.fontWeight
-        ? this.layers[this.currentIndex].style.fontWeight : 400 : 400;
+        return this.layers[this.currentIndex].style
+          ? this.layers[this.currentIndex].style.fontWeight
+            ? this.layers[this.currentIndex].style.fontWeight
+            : 400
+          : 400;
       },
       set(value) {
-        this.changeLayer("fontWeight", value)
-      }
+        this.changeLayer("fontWeight", value);
+      },
     },
     fontStyle: {
       get() {
-        return this.layers[this.currentIndex].style 
-        ? this.layers[this.currentIndex].style.fontStyle 
-        ? this.layers[this.currentIndex].style.fontStyle 
-        : 'normal'
-        : 'normal';
+        return this.layers[this.currentIndex].style
+          ? this.layers[this.currentIndex].style.fontStyle
+            ? this.layers[this.currentIndex].style.fontStyle
+            : "normal"
+          : "normal";
       },
       set(value) {
-        this.changeLayer("fontStyle", value)
-      }
+        this.changeLayer("fontStyle", value);
+      },
     },
     textAlign: {
       get() {
-        return this.layers[this.currentIndex].style ? this.layers[this.currentIndex].style.textAlign : "center";
+        return this.layers[this.currentIndex].style
+          ? this.layers[this.currentIndex].style.textAlign
+          : "center";
       },
       set(value) {
-        this.changeLayer("textAlign", value)
-      }
+        this.changeLayer("textAlign", value);
+      },
     },
     lineHeight: {
       get() {
-        return this.layers[this.currentIndex].style ? this.layers[this.currentIndex].style.lineHeight : 1;
+        return this.layers[this.currentIndex].style
+          ? this.layers[this.currentIndex].style.lineHeight
+          : 1;
       },
       set(value) {
-        this.changeLayer("lineHeight", value)
-      }
+        this.changeLayer("lineHeight", value);
+      },
     },
     letterSpacing: {
       get() {
-        return this.layers[this.currentIndex].style ? this.layers[this.currentIndex].style.letterSpacing : 0;
+        return this.layers[this.currentIndex].style
+          ? this.layers[this.currentIndex].style.letterSpacing
+          : 0;
       },
       set(value) {
-        this.changeLayer("letterSpacing", value)
-      }
-    }
+        this.changeLayer("letterSpacing", value);
+      },
+    },
   },
   methods: {
     setTextAlign(textAlign) {
-      this.textAlign = textAlign
+      this.textAlign = textAlign;
     },
     setFontWeight() {
-      if(this.fontWeight === 'bold' || this.fontWeight > 400) {
-        this.fontWeight = 400
+      if (this.fontWeight === "bold" || this.fontWeight > 400) {
+        this.fontWeight = 400;
       } else {
-        this.fontWeight = 900
+        this.fontWeight = 900;
       }
     },
     changeFont(e) {
-      const [font] = this.fontMap.filter(item => item.fontName === e)
-      this.$store.dispatch("editor/getFontFile", font.id).then((res) => {
-        loadStyle(`${this.host}/fonts/${res.data.data}.css`)
-        this.fontFamily = font.fontName
-      })
+      const [font] = this.fontMap.filter((item) => item.fontName === e);
+      this.$store
+        .dispatch("editor/getFontFile", {
+          fontName: font.id,
+          index: this.currentIndex,
+        })
+        .then((res) => {
+          loadStyle(`${this.host}/fonts/${res.data.data}.css`);
+          this.fontFamily = font.fontName;
+        });
     },
     setFontStyle() {
-      if(this.fontStyle === 'italic') {
-        this.fontStyle = 'normal'
+      if (this.fontStyle === "italic") {
+        this.fontStyle = "normal";
       } else {
-        this.fontStyle = 'italic'
+        this.fontStyle = "italic";
       }
-      console.log(this.fontStyle)
+      console.log(this.fontStyle);
     },
     changeLayer(attr, value) {
       this.$store.commit("editor/changeLayer", {
         attr,
         value,
-        index: this.currentIndex
+        index: this.currentIndex,
       });
     },
     deleteLayer() {
-      this.$store.commit("editor/deleteLayer", this.currentIndex)
+      this.$store.commit("editor/deleteLayer", this.currentIndex);
     },
     setLayerAlign(mode) {
-      switch(mode) {
+      switch (mode) {
         case "left":
           this.left = 0;
           break;
         case "right":
-          this.left = this.templateWidth - this.width
+          this.left = this.templateWidth - this.width;
           break;
         case "top":
-          this.top = 0
+          this.top = 0;
           break;
         case "bottom":
-          this.top = this.templateHeight - this.height
+          this.top = this.templateHeight - this.height;
           break;
         case "horizCenter":
-          this.left = (this.templateWidth - this.width) / 2
+          this.left = (this.templateWidth - this.width) / 2;
           break;
         case "vertiCenter":
-          this.top = (this.templateHeight - this.height) / 2
+          this.top = (this.templateHeight - this.height) / 2;
           break;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -445,7 +471,6 @@ export default {
 
   /deep/ {
     .ant-select-selection,
-    
     .ant-select-selection-selected-value,
     .el-color-picker__trigger {
       width: 100%;

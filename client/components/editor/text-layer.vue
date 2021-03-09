@@ -2,7 +2,6 @@
   <div
     ref="textLayer"
     class="text-layer"
-    
     :style="{
       top: `${top}px`,
       left: `${left}px`,
@@ -24,156 +23,192 @@
 </template>
 
 <script>
+import fontMap from "~/config/fontMap";
 import { mapState } from "vuex";
+import { loadStyle } from "~/utils/editor";
 export default {
   props: {
     index: {
       type: Number,
       default: () => {
         return 0;
-      }
+      },
     },
     scale: {
       type: Number,
       default: () => {
         return 100;
-      }
+      },
     },
     value: {
       type: String,
       default: () => {
         return "默认文本";
-      }
+      },
     },
     className: {
       type: String,
       default: () => {
         return "";
-      }
+      },
     },
     top: {
       type: Number,
       default: () => {
         return 100;
-      }
+      },
     },
     left: {
       type: Number,
       default: () => {
         return 100;
-      }
+      },
     },
     width: {
       type: Number,
       default: () => {
         return 100;
-      }
+      },
     },
     color: {
       type: String,
       default: () => {
         return "#000000";
-      }
+      },
     },
     opacity: {
       type: Number,
       default: () => {
         return 1;
-      }
+      },
     },
     fontSize: {
       type: Number,
       default: () => {
         return 24;
-      }
+      },
     },
     fontFamily: {
       type: String,
       default: () => {
         return "";
-      }
+      },
     },
     fontWeight: {
       type: Number,
       default: () => {
         return 500;
-      }
+      },
     },
     fontStyle: {
       type: String,
       default: () => {
         return "normal";
-      }
+      },
     },
     textAlign: {
       type: String,
       default: () => {
         return "center";
-      }
+      },
     },
     lineHeight: {
       type: Number,
       default: () => {
         return 1.2;
-      }
+      },
     },
     letterSpacing: {
       type: Number,
       default: () => {
         return 0;
-      }
-    }
+      },
+    },
   },
   computed: mapState({
-    editIndex:  state => state.editor.editIndex,
-    currentIndex: state => state.editor.currentIndex
+    editIndex: (state) => state.editor.editIndex,
+    currentIndex: (state) => state.editor.currentIndex,
   }),
-  data () {
+  data() {
+    this.fontMap = fontMap;
     return {
+      host:
+        process.env.NODE_ENV === "development"
+          ? process.env.DEV_HOST
+          : process.env.PRO_HOST,
       observer: null,
       firedNum: 0,
-      recordOldValue: { // 记录下旧的宽高数据，避免重复触发回调函数
-        width: '0',
-        height: '0'
-      }
-    }
+      recordOldValue: {
+        // 记录下旧的宽高数据，避免重复触发回调函数
+        width: "0",
+        height: "0",
+      },
+    };
   },
   mounted() {
-    this.listenHeight()
+    this.listenHeight();
+    this.getFont();
   },
   methods: {
     // 监听文字图层高度变化
     listenHeight() {
-      let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
-      let element = this.$refs['textLayer']
+      let MutationObserver =
+        window.MutationObserver ||
+        window.WebKitMutationObserver ||
+        window.MozMutationObserver;
+      let element = this.$refs["textLayer"];
       this.observer = new MutationObserver((mutationList) => {
         // for (let mutation of mutationList) {
         //   console.log(mutation)
         // }
-        let width = getComputedStyle(element).getPropertyValue('width')
-        let height = getComputedStyle(element).getPropertyValue('height')
-        if (width === this.recordOldValue.width && height === this.recordOldValue.height) 
-        return this.recordOldValue = {
-          width,
-          height
-        }
+        let width = getComputedStyle(element).getPropertyValue("width");
+        let height = getComputedStyle(element).getPropertyValue("height");
+        if (
+          width === this.recordOldValue.width &&
+          height === this.recordOldValue.height
+        )
+          return (this.recordOldValue = {
+            width,
+            height,
+          });
         this.$store.commit("editor/changeLayer", {
-          attr: 'height',
-          value: Number(height.replace('px', '')),
-          index: this.index
+          attr: "height",
+          value: Number(height.replace("px", "")),
+          index: this.index,
         });
-        this.firedNum += 1
-      })
-      this.observer.observe(element, { attributes: true, attributeFilter: ['style'], attributeOldValue: true })
+        this.firedNum += 1;
+      });
+      this.observer.observe(element, {
+        attributes: true,
+        attributeFilter: ["style"],
+        attributeOldValue: true,
+      });
+    },
+    getFont() {
+      const [font] = this.fontMap.filter(
+        (item) => item.fontName === this.fontFamily
+      );
+      if (font) {
+        console.log(font);
+        this.$store
+          .dispatch("editor/getFontFile", {
+            fontName: font.id,
+            index: this.index,
+          })
+          .then((res) => {
+            loadStyle(`${this.host}/fonts/${res.data.data}.css`);
+            // this.fontFamily = font.fontName;
+          });
+      }
+    },
+  },
+  beforeDestroyed() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer.takeRecords();
+      this.observer = null;
     }
   },
-  beforeDestroyed () {
-    if (this.observer) {
-      this.observer.disconnect()
-      this.observer.takeRecords()
-      this.observer = null
-    }
-  }
 };
 </script>
 
