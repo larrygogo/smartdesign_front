@@ -15,6 +15,7 @@
       :count="count"
       :show-status-tag="true"
       @changePage="getList"
+      @successDelete="getList"
     />
   </div>
 </template>

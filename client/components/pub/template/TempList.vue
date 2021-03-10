@@ -12,6 +12,7 @@
           :release="item.release"
           :verify="item.verify"
           :showStatusTag="showStatusTag"
+          @successDelete="successDelete"
         />
       </div>
     </section>
@@ -29,49 +30,52 @@
 </template>
 
 <script>
-import TempCover from "./TempCover"
+import TempCover from "./TempCover";
 export default {
   props: {
     templates: {
       type: Array,
       default: () => {
-        return []
-      }
+        return [];
+      },
     },
     page: {
       type: Number | String,
       default: () => {
-        return 1
-      }
+        return 1;
+      },
     },
     pageSize: {
       type: Number | String,
       default: () => {
-        return 10
-      }
+        return 10;
+      },
     },
     count: {
       type: Number | String,
       default: () => {
-        return 0
-      }
+        return 0;
+      },
     },
     showStatusTag: {
       type: Boolean,
       default: () => {
-        return false
-      }
-    }
+        return false;
+      },
+    },
   },
   components: {
-    TempCover
+    TempCover,
   },
   methods: {
     changePage(page) {
-      this.$emit('changePage', page)
-    }
-  }
-}
+      this.$emit("changePage", page);
+    },
+    successDelete() {
+      this.$emit("successDelete");
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

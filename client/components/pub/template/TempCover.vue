@@ -8,7 +8,9 @@
     </div>
     <div class="template-info">
       <p class="name">
-        <a-tag v-if="showStatusTag" :color="getStatus() | statusColor"> {{ getStatus() | statusName }} </a-tag>{{ name }}
+        <a-tag v-if="showStatusTag" :color="getStatus() | statusColor">
+          {{ getStatus() | statusName }} </a-tag
+        >{{ name }}
       </p>
       <el-dropdown
         class="more"
@@ -47,109 +49,120 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState } from "vuex";
 export default {
-    props: {
-      id: {
-        type: String,
-        required: true
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    cover: {
+      type: String,
+      required: true,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
+    release: {
+      type: Boolean,
+      required: true,
+    },
+    verify: {
+      type: Boolean,
+      required: true,
+    },
+    showStatusTag: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  computed: {
+    ...mapState({
+      isAdmin: (state) => state.user.isAdmin,
+    }),
+    templates: {
+      get() {
+        return this.$store.state.template.list;
       },
-      name: {
-        type: String,
-        required: true
+      set(value) {
+        this.$store.commit("template/SET_LIST", value);
       },
-      cover: {
-        type: String,
-        required: true
+    },
+    count: {
+      get() {
+        return this.$store.state.template.count;
       },
-      username: {
-        type: String,
-        required: true
+      set(value) {
+        this.$store.commit("template/SET_COUNT", value);
       },
-      release: {
-        type: Boolean,
-        required: true
-      },
-      verify: {
-        type: Boolean,
-        required: true
-      },
-      showStatusTag: {
-        type: Boolean,
-        required: true
+    },
+  },
+  filters: {
+    statusColor: (status) => {
+      return status.color;
+    },
+    statusName: (status) => {
+      return status.name;
+    },
+  },
+  data() {
+    return {
+      host:
+        process.env.NODE_ENV === "development"
+          ? process.env.DEV_HOST
+          : process.env.PRO_HOST,
+      dialogVisible: false,
+      bothResource: false,
+    };
+  },
+  methods: {
+    toEditor(id) {
+      this.$router.push("/editor?id=" + id);
+    },
+    handleCommand(command) {
+      if (command === "delete") {
+        this.handleDelete();
       }
     },
-    computed: {
-      ...mapState({
-        isAdmin: state => state.user.isAdmin
-      }),
-      templates: {
-        get() {
-          return this.$store.state.template.list
-        },
-        set(value) {
-          this.$store.commit("template/SET_LIST", value)
-        }
-      },
-      count: {
-        get() {
-          return this.$store.state.template.count
-        },
-        set(value) {
-          this.$store.commit("template/SET_COUNT", value)
-        }
-      }
+    handleDelete() {
+      this.dialogVisible = true;
+      this.bothResource = false;
     },
-    filters: {
-      statusColor: (status) => {
-        return status.color
-      },
-      statusName: (status) => {
-        return status.name
-      },
-    },
-    data() {
-      return {
-        host: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST,
-        dialogVisible: false,
-        bothResource: false
-      }
-    },
-    methods: {
-      toEditor(id) {
-        this.$router.push("/editor?id=" + id)
-      },
-      handleCommand(command) {
-        if(command === "delete") {
-          this.handleDelete()
-        }
-      },
-      handleDelete() {
-        this.dialogVisible = true
-        this.bothResource = false
-      },
-      checkDelete() {
-        this.$store.dispatch("template/delete", {id: this.id, bothResource: this.bothResource}).then(res => {
-          if(res.status === 200 && res.data.code === "0") {
-            this.$message.success("删除成功")
-            this.templates = this.templates.filter(item => item._id !== this.id)
-            this.count--
-          } else {
-            this.$message.error("删除失败")
-          }
-          this.dialogVisible = false
+    checkDelete() {
+      this.$store
+        .dispatch("template/delete", {
+          id: this.id,
+          bothResource: this.bothResource,
         })
-      },
-      getStatus() {
-        if(!this.release) {
-          return { color: "blue", name: "未发布" }
-        } else if(!this.verify){
-          return { color: "orange", name: "审核中" }
-        } else {
-          return { color: "green", name: "已发布" }
-        }
+        .then((res) => {
+          if (res.status === 200 && res.data.code === "0") {
+            this.$message.success("删除成功");
+            this.templates = this.templates.filter(
+              (item) => item._id !== this.id
+            );
+            this.count--;
+            this.$emit("successDelete");
+          } else {
+            this.$message.error("删除失败");
+          }
+          this.dialogVisible = false;
+        });
+    },
+    getStatus() {
+      if (!this.release) {
+        return { color: "blue", name: "未发布" };
+      } else if (!this.verify) {
+        return { color: "orange", name: "审核中" };
+      } else {
+        return { color: "green", name: "已发布" };
       }
-    }
+    },
+  },
 };
 </script>
 

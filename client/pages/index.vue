@@ -18,6 +18,7 @@
       :pageSize="pageSize"
       :count="count"
       @changePage="getList"
+      @successDelete="getList"
     />
     <TempUploadDialog :show="uploadDialog" @close="closeUploadDialog" />
   </div>
