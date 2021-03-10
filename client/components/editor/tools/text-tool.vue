@@ -486,10 +486,14 @@ export default {
   }
 
   .font-image {
-    height: 18px;
+    // height: 18px;
+    width: 100px;
   }
 
   .font-select-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 30px !important;
     padding: 0 !important;
     text-align: center;
