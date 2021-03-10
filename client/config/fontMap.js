@@ -67,8 +67,8 @@ export default [
   },
   {
     id: "zh238",
-    name: "字魂238号-铁甲智能黑",
-    fontName: "zihun238hao\\-tiejiazhinenghei",
+    name: "字魂238号-机械体",
+    fontName: "zihun238hao\\-jixieti",
     image: "/images/fonts/zh238.svg",
   },
   {
