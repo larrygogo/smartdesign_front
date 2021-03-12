@@ -188,7 +188,7 @@ export default {
       const [font] = this.fontMap.filter(
         (item) => item.fontName === this.fontFamily
       );
-      if (font) {
+      if (font && this.value) {
         console.log(font);
         this.$store
           .dispatch("editor/getFontFile", {

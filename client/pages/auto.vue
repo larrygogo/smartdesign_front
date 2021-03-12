@@ -19,17 +19,19 @@
             </a-form-model-item>
             <a-form-model-item label="主图片">
               <a-upload
-                name="avatar"
+                name="file"
                 list-type="picture-card"
-                class="avatar-uploader"
-                :show-upload-list="false"
+                class="file-uploader"
                 :action="`${host}/template/uploadImage`"
-                :before-upload="beforeUpload"
+                :multiple="true"
+                :headers="{ Authorization: `Bearer ${token}` }"
+                :file-list="fileList"
+                :withCredentials="true"
                 @change="handleChange"
+                @preview="handlePreview"
               >
-                <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
-                <div v-else>
-                  <a-icon :type="loading ? 'loading' : 'plus'" />
+                <div v-if="fileList.length < 1">
+                  <a-icon type="plus" />
                   <div class="ant-upload-text">
                     Upload
                   </div>
@@ -60,36 +62,44 @@
         </a-result>
       </a-layout-content>
     </a-layout>
+    <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+      <img alt="example" style="width: 100%" :src="previewImage" />
+    </a-modal>
   </div>
 </template>
 
 <script>
 import AutoCover from "../components/pub/template/AutoCover";
 import { mapState } from "vuex";
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
 export default {
   components: {
     AutoCover,
   },
   computed: {
     ...mapState({
+      token: (state) => state.user.token,
       covers: (state) => state.layerTag.covers,
     }),
   },
   data() {
     return {
-      // covers: [
-      //   "http://127.0.0.1:3300/static/2021036/d22e60bf-f957-487f-b9f2-8fa62542c31c.png",
-      //   "http://127.0.0.1:3300/static/2021036/ba4720b1-44aa-4007-9180-991acea5b157.png",
-      //   "http://127.0.0.1:3300/static/2021036/92881543-1f18-498b-8c0f-db8d77e9c795.png",
-      //   "http://127.0.0.1:3300/static/2021036/cf226b97-ebf1-4365-9902-d7e8fd7113d4.png",
-      // ],
       host:
         process.env.NODE_ENV === "development"
           ? process.env.DEV_HOST
           : process.env.PRO_HOST,
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
-      imageUrl: "",
+      previewImage: "",
+      fileList: [],
+      previewVisible: false,
       form: {
         mainText: "",
         subText: "",
@@ -99,7 +109,36 @@ export default {
   },
   methods: {
     submit() {
-      this.$store.dispatch("layerTag/getAutoRender", this.form);
+      let mainImage = "";
+      if (this.fileList.length > 0) {
+        const { response } = this.fileList[0];
+        console.log(this.fileList[0]);
+        if (response.code === "0") {
+          mainImage = response.data;
+          const form = { ...this.form, mainImage: mainImage };
+          this.$store.dispatch("layerTag/getAutoRender", form);
+        } else {
+          console.log(response);
+          this.$message.error(response.msg);
+          if (response.code === "401") {
+            this.$store.dispatch("user/logout");
+            this.$router.replace("/user/login");
+          }
+        }
+      }
+    },
+    handleCancel() {
+      this.previewVisible = false;
+    },
+    async handlePreview(file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
+      this.previewVisible = true;
+    },
+    handleChange({ fileList }) {
+      this.fileList = fileList;
     },
   },
 };
@@ -111,6 +150,36 @@ export default {
 
   .ant-layout-sider {
     background-color: transparent;
+    .image-row {
+      position: relative;
+      width: 104px;
+      height: 104px;
+
+      .image-mask {
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        opacity: 0;
+        transform: all 0.6s;
+        color: #fff;
+
+        &:hover {
+          opacity: 1;
+          background-color: rgba(0, 0, 0, 0.5);
+        }
+      }
+      .image-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
   }
 
   .ant-layout-content {
