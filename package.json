@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.9.5",
+    "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/moment": "^1.6.0",
     "ant-design-vue": "^1.7.2",
     "awe-dnd": "^0.3.4",
     "cookie-universal-nuxt": "^2.1.2",
+    "dotenv": "^16.0.0",
     "echarts": "^4.7.0",
     "element-ui": "^2.13.0",
     "node-sass": "^4.13.1",

@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports = {
     srcDir: "client/",
     env: {
@@ -39,7 +41,7 @@ module.exports = {
         "~/plugins/element-ui",
     ],
     axios: {
-        baseURL: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST,
+        baseURL: process.env.API,
         credentials: true, // 跨域携带证书
         timeout: 6000
     },
