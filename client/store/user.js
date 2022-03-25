@@ -66,7 +66,9 @@ export const actions = {
     commit
   }) {
     const res = await this.$axios.get("/user/info")
-    commit("SET_USERINFO", res.data.data)
+    if(res.status === 200 && res.data.code === "0" ) {
+      commit("SET_USERINFO", res.data.data)
+    }
     return res
   },
   async sendMail() {
