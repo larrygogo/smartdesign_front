@@ -56,12 +56,5 @@ module.exports = {
                 "@babel/plugin-proposal-nullish-coalescing-operator"
             ]
         },
-        // postcss: {
-        //   plugins: {
-        //     "postcss-px2rem": {
-        //       remUnit: 16
-        //     }
-        //   }
-        // }
     }
 }
