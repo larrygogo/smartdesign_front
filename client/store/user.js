@@ -65,14 +65,14 @@ export const actions = {
   async getUserInfo({
     commit
   }) {
-    const res = await this.$axios.get("/user/info")
+    const res = await this.$axios.get("/pub/user/info")
     console.log(res)
     if(res.status === 200 && res.data.code === "0" ) {
       commit("SET_USERINFO", res.data.data)
     }
   },
   async sendMail() {
-    const res = await this.$axios.post("/user/verify/mail")
+    const res = await this.$axios.post("/pub/user/verify/mail")
   },
   async verify({state}, code) {
     return await this.$axios({
@@ -95,7 +95,7 @@ export const actions = {
   async getWorkList({
     state, commit
   }) {
-    return await this.$axios.get(`/user/work/list?page=${state.page}&pageSize=${state.pageSize}`).then(res => {
+    return await this.$axios.get(`/pub/user/work/list?page=${state.page}&pageSize=${state.pageSize}`).then(res => {
       if(res.status === 200 && res.data.code === "0") {
         commit("SET_WORK_LIST", res.data.data.count)
         return res.data.data.rows
