@@ -144,7 +144,7 @@ export default {
   },
   data() {
     return {
-      host: process.env.NODE_ENV === 'development' ? process.env.DEV_HOST : process.env.PRO_HOST
+      host: process.env.API
     }
   },
   computed: mapState({

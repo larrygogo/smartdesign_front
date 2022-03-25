@@ -91,10 +91,7 @@ export default {
   },
   data() {
     return {
-      host:
-        process.env.NODE_ENV === "development"
-          ? process.env.DEV_HOST
-          : process.env.PRO_HOST,
+      host: process.env.API,
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
       previewImage: "",

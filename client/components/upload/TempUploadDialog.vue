@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       loading: false,
-      host: process.env.ENV_API,
+      host: process.env.API_URI,
       inputVisible: false,
       fileList: [],
       filepath: "",

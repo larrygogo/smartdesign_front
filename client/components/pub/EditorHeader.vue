@@ -95,10 +95,7 @@ export default {
       loading: false,
       saveLoading: false,
       fileList: [],
-      host:
-        process.env.NODE_ENV === "development"
-          ? process.env.DEV_HOST
-          : process.env.PRO_HOST,
+      host: process.env.API,
     };
   },
   mounted() {

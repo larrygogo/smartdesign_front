@@ -1,3 +1,3 @@
 export const state = () => ({
-    baseURL: process.env.ENV_API
+    baseURL: process.env.API_URI
 })

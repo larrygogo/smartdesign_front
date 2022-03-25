@@ -151,10 +151,7 @@ export default {
   data() {
     this.fontMap = fontMap;
     return {
-      host:
-        process.env.NODE_ENV === "development"
-          ? process.env.DEV_HOST
-          : process.env.PRO_HOST,
+      host: process.env.API,
       isEdit: false,
     };
   },
